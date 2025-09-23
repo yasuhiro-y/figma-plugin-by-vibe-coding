@@ -155,7 +155,66 @@ border-color: hsl(var(--border));
 /* background-color: #1a1a1a; */
 ```
 
-## Simple Demo Best Practices
+## Fresh UI Design Guidelines (CRITICAL)
+
+### NEVER Copy Demo Layouts
+
+**LLM INSTRUCTION**: Always design fresh UI layouts optimized for each specific plugin. Demo layouts are intentionally generic and NOT suitable for real plugins.
+
+```typescript
+// ❌ FORBIDDEN - Copying demo layout patterns
+// Do NOT copy the demo header + single card + centered button layout
+<div className="flex h-screen flex-col">
+  <header className="border-b">Demo Header</header>  // ❌ Don't copy
+  <main className="p-4">
+    <Card className="text-center">Demo Card</Card>   // ❌ Don't copy
+  </main>
+</div>
+
+// ✅ REQUIRED - Design fresh layouts for specific plugin types
+// TOOL Plugin - Compact form with immediate action
+<div className="p-4 space-y-4">
+  <div className="grid grid-cols-2 gap-2">
+    <Input placeholder="Width" />
+    <Input placeholder="Height" />
+  </div>
+  <Button className="w-full">Create Shape</Button>
+</div>
+
+// DATA Plugin - List with item actions  
+<ScrollArea className="h-80">
+  {items.map(item => (
+    <Card key={item.id} className="mb-2">
+      <CardContent className="p-3 flex justify-between">
+        <span>{item.name}</span>
+        <Button size="sm" variant="outline">Edit</Button>
+      </CardContent>
+    </Card>
+  ))}
+</ScrollArea>
+
+// INSPECTOR Plugin - Tabbed information display
+<Tabs defaultValue="properties">
+  <TabsList className="grid w-full grid-cols-3">
+    <TabsTrigger value="properties">Properties</TabsTrigger>
+    <TabsTrigger value="styles">Styles</TabsTrigger>
+    <TabsTrigger value="layers">Layers</TabsTrigger>
+  </TabsList>
+  <TabsContent value="properties">Property content</TabsContent>
+</Tabs>
+```
+
+### UI Design Process for Each Plugin
+
+1. **Analyze Plugin Purpose**: What's the core user workflow?
+2. **Choose Optimal Layout**: Single action? Multi-step? Data display? Configuration?
+3. **Select Appropriate Components**: Match shadcn/ui components to your data and actions
+4. **Optimize for Constraints**: Plugin window size, interaction patterns
+5. **Test User Flow**: Ensure the layout supports the intended workflow
+
+## Simple Demo Best Practices (LEGACY)
+
+**Note**: These patterns are for demo purposes only. Real plugins need custom-designed layouts.
 
 ### Minimal, Focused Functionality
 ```typescript

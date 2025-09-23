@@ -327,47 +327,183 @@ interface PluginManifest {
 
 **NEVER start coding without understanding the current manifest configuration.**
 
-## CRITICAL: Remove Demo Code When Building Real Features
+## 🚨 MANDATORY: Remove Demo Code Before Implementation 🚨
 
-**LLM INSTRUCTION**: When user requests to build their actual plugin features, ALWAYS remove/replace the demo boilerplate code first.
+**LLM INSTRUCTION**: **IMMEDIATELY** when user mentions building ANY real feature, **STOP** and ask them to confirm demo code deletion. **NEVER** start implementing without removing demo code first.
 
-### Demo Code to Remove
+### ⚠️ CRITICAL WARNING ⚠️
+**Demo code WILL interfere with real implementation and cause confusion.**
+**The user MUST delete demo code before any development begins.**
 
-```typescript
-// ❌ DELETE these demo functions when starting real development:
-- createRectangleNode() functions
-- createRandomShape() functionality  
-- useRandomShapeGenerator hook
-- Demo message handlers in plugin/main.ts
-- Sample UI components showing rectangles/shapes
+### 🗑️ MANDATORY DELETION CHECKLIST
 
-// ✅ REPLACE with user's actual requirements:
-- User-specific API functions
-- Real business logic hooks
-- Actual UI components for the feature
-- Proper message handlers for real functionality
+**LLM INSTRUCTION**: Show this checklist to the user and confirm EACH item is deleted:
+
+#### ❌ Files to DELETE COMPLETELY:
+```bash
+src/ui/hooks/features/useRandomShapeGenerator.ts  # DELETE ENTIRE FILE
 ```
 
-### Cleanup Process
+#### ❌ Functions to DELETE from src/plugin/main.ts:
+```typescript
+handleCreateRectangle()     # DELETE ENTIRE FUNCTION
+handleCreateRandomShape()   # DELETE ENTIRE FUNCTION
+```
 
-1. **Ask User**: "What specific functionality do you want to implement?"
-2. **Remove Demo Code**: Delete all `createRectangle*` and `createRandomShape*` related code
-3. **Clean Messages**: Remove demo message types from `src/common/messages.ts`
-4. **Update UI**: Replace demo buttons/panels with actual feature UI
-5. **Implement Real Logic**: Build user's requested functionality
+#### ❌ Code to DELETE from src/common/messages.ts:
+```typescript
+'CREATE_RECTANGLE'          # DELETE MESSAGE TYPE
+'CREATE_RANDOM_SHAPE'       # DELETE MESSAGE TYPE
+CreateRectangleMessage      # DELETE INTERFACE
+CreateRandomShapeMessage    # DELETE INTERFACE
+```
+
+#### ❌ Code to DELETE from src/ui/components/App.tsx:
+```typescript
+useRandomShapeGenerator     # DELETE IMPORT & USAGE
+createRandomShape button    # DELETE JSX ELEMENT
+```
+
+### 🛑 MANDATORY CONFIRMATION PROCESS
+
+**LLM INSTRUCTION**: **ALWAYS** use this exact script:
+
+```
+🚨 STOP! Before implementing your feature, we need to remove demo code.
+
+This project contains sample rectangle/shape creation code that will interfere with your real implementation.
+
+Please confirm you want to:
+1. ❌ DELETE useRandomShapeGenerator.ts file completely
+2. ❌ DELETE all createRectangle*/createRandomShape* functions  
+3. ❌ DELETE demo message types from messages.ts
+4. ❌ DELETE demo buttons from App.tsx
+
+Type "YES DELETE DEMO CODE" to proceed with cleanup.
+```
+
+**DO NOT PROCEED until user confirms demo code deletion.**
+
+## 🏷️ MANDATORY: Update Project Identity When Idea is Finalized 🏷️
+
+**LLM INSTRUCTION**: **IMMEDIATELY** after demo code deletion, **STOP** and prompt user to update project identity.
+
+### 🎯 CRITICAL IDENTITY UPDATE CHECKLIST
+
+**LLM INSTRUCTION**: Show this checklist to the user and confirm EACH item is updated:
+
+```
+🚨 STOP! Now update your plugin's identity for your actual project.
+
+Your plugin idea is: [USER_PLUGIN_IDEA]
+
+Please confirm you want to update:
+1. 📝 Plugin name in figma.manifest.ts 
+2. 📦 Project name in package.json
+3. 🎯 Plugin description (if needed)
+4. 🆔 Verify plugin ID is unique
+5. 📁 Consider renaming project folder
+
+Type "YES UPDATE IDENTITY" to proceed with updates.
+```
+
+**DO NOT START FEATURE IMPLEMENTATION until project identity is updated.**
+
+## 🎨 MANDATORY: Design UI from Scratch with shadcn/ui 🎨
+
+**LLM INSTRUCTION**: **NEVER** copy demo UI layouts. **ALWAYS** design fresh UI optimized for user's specific plugin.
+
+### 🚨 CRITICAL UI DESIGN WARNING 🚨
+
+**LLM INSTRUCTION**: Show this warning to the user before starting UI implementation:
+
+```
+🚨 IMPORTANT: Don't copy the demo UI design!
+
+The current demo UI (Random Shape Generator layout) is NOT suitable for your plugin.
+
+You need a FRESH UI design optimized for: [USER_PLUGIN_FUNCTIONALITY]
+
+Please confirm you want to:
+1. 🗑️ DELETE the demo App.tsx layout completely
+2. 🎨 DESIGN new UI from scratch using shadcn/ui
+3. 📐 OPTIMIZE layout for your specific plugin features
+4. 🎯 MATCH UI patterns to your actual workflow
+
+Type "YES DESIGN FROM SCRATCH" to proceed with fresh UI design.
+```
+
+### ✅ UI Design Principles for Fresh Implementation:
+
+1. **Analyze User Workflow**: Understand how users will interact with your plugin
+2. **Choose Optimal Layout**: Select shadcn/ui patterns that match your features
+3. **Design Information Architecture**: Plan data flow and user journey
+4. **Optimize for Plugin Window**: Design for 320x480px or 400x600px constraints
+5. **Use Appropriate Components**: Pick shadcn/ui components that match your use case
+
+### 🎨 shadcn/ui Layout Patterns by Plugin Type:
 
 ```typescript
-// ✅ EXAMPLE: Clean removal and replacement
-// Before: Demo rectangle creation
-function handleCreateRectangle(msg: CreateRectangleMessage): void { ... }
+// ✅ TOOL PLUGIN - Single action with options
+<Card>
+  <CardHeader><CardTitle>Tool Name</CardTitle></CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      {/* Options/settings */}
+      <Button>Execute Tool</Button>
+    </div>
+  </CardContent>
+</Card>
 
-// After: User's actual feature
+// ✅ BATCH PROCESSOR - List with actions
+<Card>
+  <CardHeader><CardTitle>Batch Operations</CardTitle></CardHeader>
+  <CardContent>
+    <div className="space-y-2">
+      {items.map(item => <Badge key={item.id}>{item.name}</Badge>)}
+    </div>
+    <Button>Process All</Button>
+  </CardContent>
+</Card>
+
+// ✅ INSPECTOR - Data display with details
+<div className="space-y-4">
+  {data.map(item => (
+    <Card key={item.id}>
+      <CardContent className="pt-4">
+        {/* Item details */}
+      </CardContent>
+    </Card>
+  ))}
+</div>
+
+// ✅ GENERATOR - Configuration with preview
+<div className="grid grid-cols-1 gap-4">
+  <Card><CardHeader><CardTitle>Settings</CardTitle></CardHeader></Card>
+  <Card><CardHeader><CardTitle>Preview</CardTitle></CardHeader></Card>
+</div>
+```
+
+**NEVER use the demo layout patterns - design fresh for each plugin type.**
+
+### 🛠️ AFTER Cleanup, Identity Update, AND UI Design - Then Implement
+
+**ONLY after demo code is completely removed:**
+
+```typescript
+// ✅ NOW SAFE: Implement user's actual feature
 function handleUserFeature(msg: UserFeatureMessage): void { 
-  // Real implementation based on user requirements
+  // Clean implementation without demo code interference
 }
 ```
 
-**Remember**: Demo code is ONLY for showing plugin structure - always replace with real features.**
+### 🚨 FINAL WARNING 🚨
+
+**LLM INSTRUCTION**: **NEVER EVER** implement new features on top of demo code.
+**Demo code creates confusion, bugs, and poor user experience.**
+**ALWAYS delete first, implement second.**
+
+**If user refuses demo code deletion, STOP and explain the risks clearly.**
 
 ## CRITICAL: Figma JavaScript Compatibility Guidelines
 
