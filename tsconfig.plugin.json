@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
+    "target": "ES2017",
+    "lib": ["ES2017"],
     "types": ["@figma/plugin-typings", "node"],
     "moduleResolution": "bundler",
     "jsx": "preserve"

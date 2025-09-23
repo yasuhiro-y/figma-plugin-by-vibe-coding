@@ -47,8 +47,8 @@ export default defineConfig({
       },
     },
 
-    // Target environment for plugin code (no DOM APIs available)
-    target: 'es2022',
+    // Target environment for plugin code (Figma runtime supports ES2017)
+    target: 'es2017',
   },
 
   // Environment variables configuration
@@ -82,8 +82,8 @@ export default defineConfig({
 
   // Esbuild configuration for TypeScript transformation
   esbuild: {
-    // Target ES2022 for modern Figma plugin runtime
-    target: 'es2022',
+    // Target ES2017 for Figma plugin runtime compatibility
+    target: 'es2017',
 
     // Enable tree shaking
     treeShaking: true,

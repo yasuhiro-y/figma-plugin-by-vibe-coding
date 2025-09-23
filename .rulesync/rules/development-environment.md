@@ -378,14 +378,51 @@ function handleUserFeature(msg: UserFeatureMessage): void {
 // esbuild: { target: 'es2022' }
 
 // ✅ CORRECT APPROACH - Fix the actual code for ES2017 compatibility
-// Instead of spread operators: { ...obj, prop: value }
-Object.assign({}, obj, { prop: value })
 
-// Instead of optional chaining: obj?.prop?.method?.()
-obj && obj.prop && obj.prop.method && obj.prop.method()
+// 1. Optional Catch Binding (ES2019) → ES2017
+// ❌ ES2019: catch { }
+try {
+  riskyOperation();
+} catch {  // ERROR in Figma!
+  handleError();
+}
 
-// Instead of nullish coalescing: value ?? defaultValue
-typeof value !== 'undefined' && value !== null ? value : defaultValue
+// ✅ ES2017: catch (error)
+try {
+  riskyOperation();
+} catch (error) {  // Compatible with Figma
+  handleError();
+}
+
+// 2. Spread Operators in Objects
+// ❌ ES2018: { ...obj, prop: value }
+const newObj = { ...baseObj, updatedProp: newValue };
+
+// ✅ ES2017: Object.assign()
+const newObj = Object.assign({}, baseObj, { updatedProp: newValue });
+
+// 3. Optional Chaining (ES2020)
+// ❌ ES2020: obj?.prop?.method?.()
+const result = obj?.prop?.method?.();
+
+// ✅ ES2017: Explicit null checks
+const result = obj && obj.prop && obj.prop.method ? obj.prop.method() : undefined;
+
+// 4. Nullish Coalescing (ES2020)
+// ❌ ES2020: value ?? defaultValue
+const finalValue = inputValue ?? defaultValue;
+
+// ✅ ES2017: Explicit undefined/null checks
+const finalValue = (typeof inputValue !== 'undefined' && inputValue !== null) 
+  ? inputValue 
+  : defaultValue;
+
+// 5. Array.flat() (ES2019)
+// ❌ ES2019: array.flat()
+const flattened = nestedArray.flat();
+
+// ✅ ES2017: Manual flattening
+const flattened = nestedArray.reduce((acc, val) => acc.concat(val), []);
 ```
 
 **LLM INSTRUCTION**: This development environment ensures reliable, type-safe plugin development with optimal DX for AI-assisted coding.
