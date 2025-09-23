@@ -95,8 +95,19 @@ function copyTemplate(templatePath: string, targetDir: string, projectName: stri
   });
 }
 
+function generateRandomPluginId(): string {
+  // Generate a 19-digit random number (typical Figma plugin ID format)
+  const timestamp = Date.now().toString(); // 13 digits
+  const random = Math.floor(Math.random() * 1000000).toString().padStart(6, '0'); // 6 digits
+  return timestamp + random; // Total 19 digits
+}
+
 function updateProjectFiles(targetDir: string, options: CreateOptions): void {
   console.log('🔧 Updating project files...');
+  
+  // Generate unique plugin ID for this project
+  const pluginId = generateRandomPluginId();
+  console.log(`🆔 Generated plugin ID: ${pluginId}`);
   
   // Update package.json
   const packagePath = path.join(targetDir, 'package.json');
@@ -107,13 +118,17 @@ function updateProjectFiles(targetDir: string, options: CreateOptions): void {
     writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
   }
   
-  // Update manifest
+  // Update manifest with name and unique plugin ID
   const manifestPath = path.join(targetDir, 'figma.manifest.ts');
   if (existsSync(manifestPath)) {
     let manifest = readFileSync(manifestPath, 'utf-8');
     manifest = manifest.replace(
       "name: 'Figma Plugin by Vibe Coding'",
       `name: '${options.projectName}'`
+    );
+    manifest = manifest.replace(
+      "id: '0000000000000000000'",
+      `id: '${pluginId}'`
     );
     writeFileSync(manifestPath, manifest);
   }
@@ -159,6 +174,21 @@ function generateAIRules(targetDir: string): void {
   }
 }
 
+function runInitialBuild(targetDir: string): void {
+  console.log('🔨 Running initial build...');
+  
+  try {
+    execSync('npm run build', { 
+      cwd: targetDir, 
+      stdio: 'inherit' 
+    });
+    console.log('✅ Initial build completed successfully');
+  } catch (error) {
+    console.warn('⚠️  Initial build failed');
+    console.log('Please run: cd', path.basename(targetDir), '&& npm run build');
+  }
+}
+
 function printSuccess(options: CreateOptions): void {
   console.log('\n🎉 Project created successfully!');
   console.log('\nNext steps:');
@@ -184,6 +214,7 @@ function main(): void {
     updateProjectFiles(options.targetDir, options);
     installDependencies(options.targetDir);
     generateAIRules(options.targetDir);
+    runInitialBuild(options.targetDir);
     
     printSuccess(options);
     
