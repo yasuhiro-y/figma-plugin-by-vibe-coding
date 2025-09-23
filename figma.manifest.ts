@@ -9,8 +9,12 @@
  */
 
 export default {
+  // ❌❌❌ UPDATE THIS NAME WHEN YOUR PLUGIN IDEA IS FINALIZED ❌❌❌
+  // 🚨 WARNING: "Figma Plugin by Vibe Coding" is a PLACEHOLDER name!
+  // ✅ REPLACE with your actual plugin name (e.g., "Color Palette Generator", "Design System Helper")
   name: 'Figma Plugin by Vibe Coding',
-  id: '0000000000000000000', // ⚠️  Replace with your plugin ID from Figma
+  
+  id: '0000000000000000000', // ⚠️  Replace with your plugin ID from Figma (or keep generated ID from create command)
   api: '1.0.0',
   main: 'code.js',
   ui: 'index.html',

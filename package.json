@@ -1,7 +1,7 @@
 {
-  "name": "figma-plugin-by-vibe-coding",
+  "name": "figma-plugin-by-vibe-coding", // ❌ UPDATE THIS: Replace with your actual plugin name (e.g., "my-color-palette-plugin")
   "version": "1.0.0", 
-  "description": "Figma Plugin by Vibe Coding - Professional plugin development with AI-assisted coding, React, TypeScript, and shadcn/ui",
+  "description": "Figma Plugin by Vibe Coding - Professional plugin development with AI-assisted coding, React, TypeScript, and shadcn/ui", // ❌ UPDATE THIS: Describe your actual plugin functionality
   "keywords": [
     "figma",
     "plugin",
