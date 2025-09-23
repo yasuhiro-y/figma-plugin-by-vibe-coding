@@ -338,3 +338,4 @@ figma.on('selectionchange', () => {
     figma.ui.postMessage(message);
   }
 });
+
