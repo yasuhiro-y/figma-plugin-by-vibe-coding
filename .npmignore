@@ -1,0 +1,56 @@
+# Development files
+.git/
+.vscode/
+.cursor/
+.claude/
+.agents/
+.github/
+
+# Build artifacts (plugin build, not npm create artifacts)
+dist/code.js
+dist/index.html
+dist/manifest.json
+
+# Test files and dev directories  
+test/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Development configs
+.env*
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary folders
+tmp/
+temp/
+
+# IDE files
+*.swp
+*.swo
+*~

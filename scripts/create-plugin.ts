@@ -84,8 +84,8 @@ function copyTemplate(templatePath: string, targetDir: string, projectName: stri
       // Skip certain directories and files
       const relativePath = path.relative(templatePath, src);
       const skipPatterns = [
-        'node_modules', '.git', 'dist', '.cursor', '.claude',
-        'CLAUDE.md', 'AGENTS.md', 'scripts/create-plugin.ts'
+        'node_modules', '.git', 'dist', 'bin', '.cursor', '.claude', '.github/workflows',
+        'CLAUDE.md', 'AGENTS.md', 'scripts/create-plugin.ts', 'scripts/release.ts'
       ];
       
       return !skipPatterns.some(pattern => 
@@ -115,6 +115,25 @@ function updateProjectFiles(targetDir: string, options: CreateOptions): void {
     const packageJson = JSON.parse(readFileSync(packagePath, 'utf-8'));
     packageJson.name = options.projectName;
     packageJson.description = `${options.projectName} - Figma Plugin by Vibe Coding`;
+    
+    // Remove npm create command related fields
+    delete packageJson.bin;
+    delete packageJson.publishConfig;
+    if (packageJson.files) {
+      // Remove 'bin/' from files array
+      packageJson.files = packageJson.files.filter((file: string) => file !== 'bin/');
+    }
+    if (packageJson.scripts) {
+      // Remove npm publishing and release related scripts
+      delete packageJson.scripts['build:create'];
+      delete packageJson.scripts['prepublishOnly'];
+      delete packageJson.scripts['release'];
+      delete packageJson.scripts['release:minor'];
+      delete packageJson.scripts['release:patch'];
+      delete packageJson.scripts['release:major'];
+      delete packageJson.scripts['prepare-publish'];
+    }
+    
     writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
   }
   

@@ -33,16 +33,22 @@
   },
   "type": "module",
   "bin": {
-    "create-figma-plugin-by-vibe-coding": "./scripts/create-plugin.ts"
+    "create-figma-plugin-by-vibe-coding": "./bin/create-plugin.js"
   },
   "files": [
     "src/",
-    "dist/",
-    "scripts/",
+    "bin/",
+    "scripts/auto-lint.ts",
+    "scripts/build-manifest.ts",
+    "scripts/create-plugin.ts", 
+    "scripts/generate-publish-assets.ts",
     ".rulesync/",
+    "figma.manifest.ts",
+    "tsconfig*.json",
+    "vite.config.*.ts",
+    "tailwind.config.ts",
     "*.json",
     "*.jsonc", 
-    "*.ts",
     "*.md",
     "*.config.*",
     "*.schema.json"
@@ -60,6 +66,8 @@
     "build:plugin": "vite build --config vite.config.plugin.ts",
     "build:ui": "vite build --config vite.config.ui.ts",
     "build:manifest": "tsx scripts/build-manifest.ts",
+    "build:create": "tsc scripts/create-plugin.ts --outDir bin --target es2022 --module nodenext --moduleResolution nodenext --allowSyntheticDefaultImports --esModuleInterop",
+    "prepublishOnly": "pnpm run build:create",
     "preview": "vite preview --config vite.config.ui.ts",
     "lint": "biome check src/",
     "lint:check": "biome check src/",
@@ -78,7 +86,11 @@
     "pre-commit": "pnpm run lint:fix && pnpm run format && pnpm run typecheck",
     "check-all": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
     "auto-lint": "tsx scripts/auto-lint.ts",
-    "prepare-publish": "tsx scripts/generate-publish-assets.ts"
+    "prepare-publish": "tsx scripts/generate-publish-assets.ts",
+    "release": "tsx scripts/release.ts",
+    "release:minor": "npm version minor && npm publish",
+    "release:patch": "npm version patch && npm publish",
+    "release:major": "npm version major && npm publish"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
