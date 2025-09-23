@@ -189,6 +189,96 @@ function runInitialBuild(targetDir: string): void {
   }
 }
 
+function initializeGitRepository(targetDir: string): void {
+  console.log('🔧 Initializing Git repository...');
+  
+  try {
+    // Initialize git repository
+    execSync('git init', { 
+      cwd: targetDir, 
+      stdio: 'pipe' // Suppress git init output
+    });
+    
+    // Create .gitignore
+    const gitignoreContent = `# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# OS files  
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# AI tool generated files (optional - remove if you want to commit them)
+.cursor/
+.claude/
+.agents/
+.amazonq/
+.augment/
+.clinerules/
+.codex/
+.gemini/
+.junie/
+.kiro/
+.opencode/
+.qwen/  
+.roo/
+.windsurf/
+.warp/
+.github/instructions/
+.github/copilot-instructions.md
+.augment-guidelines
+CLAUDE.md
+AGENTS.md
+QWEN.md
+GEMINI.md
+WARP.md
+
+# Plugin development
+figma-plugin.zip
+`;
+    
+    writeFileSync(path.join(targetDir, '.gitignore'), gitignoreContent);
+    
+    // Add all files
+    execSync('git add .', { 
+      cwd: targetDir, 
+      stdio: 'pipe' 
+    });
+    
+    // Create initial commit
+    execSync('git commit -m "feat: initial Figma plugin project setup\\n\\nGenerated with figma-plugin-by-vibe-coding"', { 
+      cwd: targetDir, 
+      stdio: 'pipe' 
+    });
+    
+    console.log('✅ Git repository initialized with initial commit');
+  } catch (error) {
+    console.warn('⚠️  Git initialization failed');
+    console.log('You can manually run: cd', path.basename(targetDir), '&& git init');
+  }
+}
+
 function printSuccess(options: CreateOptions): void {
   console.log('\n🎉 Project created successfully!');
   console.log('\nNext steps:');
@@ -199,6 +289,9 @@ function printSuccess(options: CreateOptions): void {
   console.log('  README-LLM.md - AI development guide');
   console.log(`\n🤖 AI Target: ${options.aiTarget}`);
   console.log('  Your AI development rules have been generated!');
+  console.log('\n📦 Git Repository:');
+  console.log('  ✅ Initialized with initial commit');
+  console.log('  ✅ .gitignore configured for Figma plugin development');
 }
 
 function main(): void {
@@ -215,6 +308,7 @@ function main(): void {
     installDependencies(options.targetDir);
     generateAIRules(options.targetDir);
     runInitialBuild(options.targetDir);
+    initializeGitRepository(options.targetDir);
     
     printSuccess(options);
     
