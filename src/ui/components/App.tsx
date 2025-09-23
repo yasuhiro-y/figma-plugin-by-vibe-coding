@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { useFigmaPlugin, useRandomShapeGenerator } from '../hooks';
-import { Badge } from './ui/badge';
+
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
@@ -27,12 +27,6 @@ export function App(): JSX.Element {
             <div className="h-8 w-8 rounded bg-gradient-to-br from-violet-500 to-pink-500" />
             <h1 className="font-semibold text-lg">Random Shape</h1>
           </div>
-          <Badge variant={isConnected ? 'default' : 'destructive'} className="gap-1">
-            <div
-              className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}
-            />
-            {isConnected ? 'Connected' : 'Disconnected'}
-          </Badge>
         </div>
       </header>
 

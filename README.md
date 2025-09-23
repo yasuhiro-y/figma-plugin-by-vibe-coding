@@ -1,40 +1,53 @@
-# 🚀 Figma Plugin Vibe Coding Boilerplate
+# 🚀 Figma Plugin by Vibe Coding
 
-**Vibe Coding（AI支援開発）向けの最高品質Figmaプラグインボイラープレート**
+**プロフェッショナル品質のFigmaプラグイン開発ボイラープレート（AI支援開発対応）**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white)](https://ui.shadcn.com/)
+[![rulesync](https://img.shields.io/badge/rulesync-FF6B35?style=for-the-badge)](https://github.com/dyoshikawa/rulesync)
 
-## 🎯 このボイラープレートの特徴
+モダンな技術スタックとAI開発支援ツール統合による、最高品質のFigmaプラグイン開発環境です。
 
-- **🤖 AI支援開発最適化**: Cursor、Claude Code、GitHub Copilot等のAI開発ツールと完全統合
-- **🏗️ プロフェッショナル設計**: デュアルプロセス・アーキテクチャ完全対応
-- **🛡️ 完全型安全**: TypeScript + Zod による厳密な型チェックとランタイム検証  
-- **🎨 モダンUI**: shadcn/ui + Tailwind CSS による美しいインターフェース
-- **⚡ 高速開発体験**: Vite による爆速ビルドとホットリロード
-- **📱 レスポンシブ**: Figmaプラグイン環境に最適化された UI設計
+## ✨ 特徴
+
+### 🏗️ **最新技術スタック**
+- **TypeScript 5.6+** - 完全な型安全性
+- **React 18** - モダンなUI開発
+- **Vite** - 高速ビルドシステム
+- **shadcn/ui** - 美しいコンポーネント
+- **Tailwind CSS** - ユーティリティファースト
+- **Biome** - 高速なリント・フォーマット
+
+### 🤖 **AI開発支援統合**
+- **15+のAI開発ツール対応** - Cursor, Claude, Copilot, Cline等
+- **rulesync** - AI開発ルール自動生成
+- **型安全なコード生成** - AIが理解しやすい構造
+- **プロンプト最適化** - 効率的なAI協働
+
+### 🛡️ **プロダクション対応**
+- **HMR安定性** - CSS "溶け" 問題解決済み
+- **エラーハンドリング** - Result patternによる堅牢性  
+- **自動品質チェック** - lint + format + typecheck
+- **デュアルプロセス対応** - Figma Plugin API完全準拠
 
 ## 🚀 クイックスタート
 
-### 1. リポジトリのクローン
-
+### 1. プロジェクト作成
 ```bash
-git clone https://github.com/your-username/figma-plugin-vibe-coding-boilerplate.git
-cd figma-plugin-vibe-coding-boilerplate
-```
+# npm create コマンドで新しいプロジェクト作成
+npm create figma-plugin-by-vibe-coding my-awesome-plugin
 
-### 2. 依存関係のインストール
-
-```bash
+# または、このリポジトリをクローン
+git clone https://github.com/yasuhiro-y/figma-plugin-by-vibe-coding.git
+cd figma-plugin-by-vibe-coding
 pnpm install
-# または npm install / yarn install
 ```
 
-### 3. AI開発ツール向けルール生成 🤖
+### 2. AI開発ツール向けルール生成 🤖
 
-**重要**: このボイラープレートはAI支援開発を前提としているため、使用前に必ずAI開発ツール用のルールファイルを生成してください。
+**重要**: AI支援開発を使用する場合、必ずルールファイルを生成してください。
 
 #### AIツールの選択
 `rulesync.jsonc`を編集してAIツールを選択：
@@ -60,161 +73,127 @@ pnpm run rules:generate
 - **Cline**: `.clinerules/` 自動生成
 - **その他**: Amazon Q、Qwen、Gemini 等対応
 
-### 4. 開発サーバーの起動
+### 3. 開発開始
 
 ```bash
+# 開発サーバー起動
 pnpm dev
+
+# または UI のみをブラウザで開発
+pnpm dev:ui-only  # http://localhost:3000
 ```
 
-### 5. Figmaでの設定
+### 4. Figmaでプラグイン読み込み
 
-1. Figmaを開く
-2. メニューバー > Plugins > Development > Import plugin from manifest...
+1. **Figma Desktop** を開く
+2. **Plugins** → **Development** → **Import plugin from manifest...**
 3. `dist/manifest.json` を選択
-4. プラグインが Plugins メニューに追加されます
+4. プラグインが読み込まれ、ランダム図形生成が利用可能
 
-## 📁 プロジェクト構造
+## 📋 開発コマンド
+
+### 🔧 **基本コマンド**
+```bash
+pnpm dev              # 開発サーバー起動
+pnpm build            # プロダクションビルド（hot reload安全）
+pnpm build:fresh      # フルクリーンビルド（初回・リリース用）
+pnpm dev:ui-only      # UI のみブラウザ開発
+```
+
+### 🧹 **品質管理**
+```bash
+pnpm lint:fix         # lint自動修正
+pnpm format          # コード整形
+pnpm typecheck       # TypeScript型チェック  
+pnpm check-all       # 全品質チェック
+```
+
+### 🤖 **AI開発支援**
+```bash
+pnpm rules:generate  # 設定されたAIツール用ルール生成
+pnpm rules:dev       # 主要ツールのみ（高速）
+```
+
+## 🏗️ プロジェクト構造
 
 ```
 src/
-├── plugin/           # メインスレッド（Figma API アクセス）
-│   └── main.ts
-├── ui/               # UIスレッド（React コンポーネント）
-│   ├── components/   
+├── plugin/           # プラグインスレッド（Figma API）
+│   └── main.ts       
+├── ui/               # UIスレッド（React）
+│   ├── components/   # UIコンポーネント
 │   ├── hooks/        
-│   └── main.tsx      
-└── common/           # 共有型定義・通信契約
-    ├── types.ts      
-    ├── messages.ts   
-    └── constants.ts  
-
-.rulesync/            # AI開発ツール設定（編集可能）
-├── rules/           # ルール定義
-├── commands/        # カスタムコマンド
-└── subagents/       # 専門エージェント
+│   │   ├── core/     # コア機能（通信、接続管理）
+│   │   └── features/ # 機能別（カスタムロジック）
+│   └── styles/       # グローバルスタイル
+├── common/           # 共有ファイル
+│   ├── messages.ts   # 通信契約
+│   ├── types.ts      # 型定義
+│   └── constants.ts  # 定数
+└── .rulesync/        # AI開発ルール（自動生成）
 ```
 
-## 💻 開発コマンド
+## 🎯 デモ機能
 
-### 基本コマンド
+### ランダム図形生成デモ
+- **機能**: ランダムな図形（矩形、楕円、多角形）を生成
+- **特徴**: ランダムな色、サイズ、ビューポート内配置
+- **通知**: `figma.notify()` によるネイティブ通知
+- **型安全**: 完全なTypeScript型チェック
+
+## 🤖 AI開発のコツ
+
+1. **AIツール設定**: `rulesync.jsonc`で好みのAIツールを設定
+2. **ルール更新**: 新機能実装前に `pnpm run rules:generate` 実行
+3. **専門エージェント**: Claude の `figma-expert` エージェントに相談
+4. **シンプルさ重視**: rulesyncの標準機能をそのまま活用
+
+## 💡 トラブルシューティング
+
+### **Hot Reload中のビルドエラー**
 ```bash
-pnpm dev              # 開発サーバー起動
-pnpm build            # 本番用ビルド
-pnpm typecheck        # 型チェック
-pnpm lint             # コード品質チェック
-pnpm format           # コードフォーマット
+# ❌ 問題: pnpm build でプラグインが落ちる
+# ✅ 解決: hot reload安全ビルド使用
+pnpm build        # 安全ビルド（recommended）
+pnpm build:fresh  # フルクリーンビルド（初回・リリース時のみ）
 ```
 
-### AI支援開発コマンド 🤖
+### **CSS適用問題**
+- HMR時のCSS消失問題は解決済み
+- 5層保護システムによる安定したスタイル適用
+- `forceCSSSafety()` による自動復旧
+
+### **rulesyncエラー**
 ```bash
-pnpm run rules:generate    # 全AI開発ツール用ルール生成（推奨）
-pnpm run rules:dev        # 主要ツールのみ（高速）
+# Node.js互換性エラーが出ても正常動作
+ls .cursor CLAUDE.md  # ファイル生成確認
 ```
 
-## 🤖 AI開発ツールとの連携
+## 📦 npm create コマンド
 
-このボイラープレートは以下のAI開発ツールと完全統合されています：
+```bash
+# 基本使用
+npm create figma-plugin-by-vibe-coding my-plugin
 
-### ✅ 対応AI開発ツール（15+）
-- **Cursor** - `.cursor/rules/` + カスタムコマンド
-- **Claude Code** - `.claude/memories/` + 専門エージェント  
-- **GitHub Copilot** - `.github/instructions/` 統合
-- **その他** - Windsurf、Warp、Junie、Kiro 等、全主要ツール対応
-
-### 🎯 専門エージェント
-- **figma-expert** - Figma Plugin API専門エージェント
-  - TypeScript完全型安全パターン
-  - shadcn/ui統合ガイド
-  - エラーハンドリングベストプラクティス
-
-### 📝 カスタムコマンド
-- **generate-plugin** - 新機能生成用コマンド
-  - 完全型安全な実装
-  - shadcn/ui準拠のUI生成
-  - エラーハンドリング統合
-
-## 🏗️ アーキテクチャの特徴
-
-### デュアルプロセス・モデル
-Figmaプラグインは2つの完全に分離されたプロセスで動作します：
-
-1. **プラグインスレッド** (`src/plugin/`)
-   - Figma API へのフルアクセス
-   - サンドボックス化されたJavaScript環境
-   - ブラウザAPI使用不可
-
-2. **UIスレッド** (`src/ui/`)
-   - 標準的なブラウザ環境
-   - React + shadcn/ui
-   - Figma API アクセス不可
-
-**重要**: 両プロセス間の通信は `postMessage` のみ
-
-## 🎨 UI設計原則
-
-### shadcn/ui「ずっぷり」方針
-このプロジェクトでは shadcn/ui に完全に依存する設計を採用：
-
-- ✅ **shadcn/uiコンポーネントのみ使用**
-- ✅ **一貫したデザインシステム**
-- ❌ カスタムCSS・インラインスタイルは使用しない
-
-### レスポンシブ設計
-- プラグインウィンドウ: 320x480px または 400x600px
-- 小さな画面での最適な UX
-- アクセシビリティ対応
-
-## 🛡️ 型安全性
-
-### 完全TypeScript化
-- 全ての関数に明示的な型注釈必須
-- Result パターンによるエラーハンドリング  
-- Zod による外部データのランタイム検証
-
-### 通信層の型安全性
-```typescript
-interface PluginAPI {
-  createRectangle(width: number, height: number): Promise<string>;
-  getSelectedNodes(): Promise<NodeData[]>;
-}
+# AIツール指定
+npm create figma-plugin-by-vibe-coding my-plugin --ai=cursor
+npm create figma-plugin-by-vibe-coding my-plugin --ai=claudecode
 ```
 
-## 📚 ドキュメント
+## 📝 ライセンス
 
-- **[README-LLM.md](./README-LLM.md)** - LLM/AI開発ツール向け技術詳細
-- **[Figma Plugin API Docs](https://www.figma.com/plugin-docs/)** - 公式API ドキュメント
-- **[shadcn/ui](https://ui.shadcn.com/)** - コンポーネントライブラリ
+MIT License - 詳細は [LICENSE](./LICENSE) を参照
 
-## 🤝 貢献
+## 🙋‍♂️ サポート
 
-1. このリポジトリをフォーク
-2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
+- **Issues**: [GitHub Issues](https://github.com/yasuhiro-y/figma-plugin-by-vibe-coding/issues)
+- **Discussions**: プロジェクトのDiscussions
+- **Documentation**: `README-LLM.md` (AI開発者向け詳細ガイド)
 
-## 📄 ライセンス
+## 🌟 コントリビューション
 
-MIT License - 詳細は [LICENSE](LICENSE) ファイルをご覧ください。
-
-## 💡 ヒント
-
-### 最初に試すこと
-1. プラグインを起動して四角形を作成
-2. Figmaで何かオブジェクトを選択して選択パネルを確認
-3. 異なる色の四角形を作成
-
-### トラブルシューティング
-- **プラグインが起動しない** → `pnpm build` でビルドを確認
-- **スタイルが適用されない** → ブラウザの開発者ツールでCSSを確認
-- **型エラー** → `pnpm typecheck` で詳細確認
-
-### AI開発のコツ 🤖
-1. 新機能実装前に `pnpm run rules:generate` でルール更新
-2. エラー時は Claude の `figma-expert` エージェントに相談
-3. `generate-plugin` コマンドで新機能の雛形生成
-4. 全AI開発ツール対応で、お好みのAIアシスタントが使用可能
+プルリクエスト歓迎！詳細は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
 
 ---
 
-**Happy Vibe Coding! 🚀✨**
+**Made with ❤️ for AI-assisted Figma plugin development**
