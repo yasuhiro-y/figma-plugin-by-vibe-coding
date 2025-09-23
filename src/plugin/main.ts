@@ -52,7 +52,9 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
         if (result.success) {
           figma.notify('Rectangle created successfully!');
         } else {
-          figma.notify(`Failed to create rectangle: ${result.error.message}`, { error: true });
+          figma.notify(`Failed to create rectangle: ${result.error.message}`, {
+            error: true,
+          });
         }
         break;
       }
@@ -210,7 +212,11 @@ function createRectangleNode(options: CreateNodeOptions): string {
 /**
  * Creates a random shape with random properties
  */
-function createRandomShapeNode(): { type: string; color: string; nodeId: string } {
+function createRandomShapeNode(): {
+  type: string;
+  color: string;
+  nodeId: string;
+} {
   const shapes = ['rectangle', 'ellipse', 'polygon'];
   const shapeType = shapes[Math.floor(Math.random() * shapes.length)];
 
@@ -338,4 +344,3 @@ figma.on('selectionchange', () => {
     figma.ui.postMessage(message);
   }
 });
-

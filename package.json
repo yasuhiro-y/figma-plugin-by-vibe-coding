@@ -55,7 +55,7 @@
     "dev:plugin": "vite build --watch --config vite.config.plugin.ts",
     "dev:ui": "vite build --watch --config vite.config.ui.ts",
     "dev:ui-only": "vite --config vite.config.ui.ts --mode development",
-    "build": "pnpm run clean && pnpm run lint:check && pnpm run typecheck && pnpm run build:plugin && pnpm run build:ui && pnpm run build:manifest",
+    "build": "pnpm run clean && pnpm run format && pnpm run lint:fix && pnpm run typecheck && pnpm run build:plugin && pnpm run build:ui && pnpm run build:manifest",
     "build:safe": "pnpm run lint:check && pnpm run typecheck && pnpm run build:plugin && pnpm run build:ui && pnpm run build:manifest",
     "build:plugin": "vite build --config vite.config.plugin.ts",
     "build:ui": "vite build --config vite.config.ui.ts",
