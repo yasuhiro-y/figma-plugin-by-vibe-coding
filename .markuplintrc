@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "required-h1": false,
+    "invalid-attr": false
+  },
+  "excludeFiles": [
+    "**/dist/**",
+    "**/node_modules/**"
+  ]
+}

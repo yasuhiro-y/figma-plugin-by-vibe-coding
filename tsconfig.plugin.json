@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "types": ["@figma/plugin-typings", "node"],
+    "moduleResolution": "bundler",
+    "jsx": "preserve"
+  },
+  "include": [
+    "src/plugin/**/*",
+    "src/common/**/*"
+  ],
+  "exclude": [
+    "src/ui/**/*",
+    "node_modules",
+    "dist"
+  ]
+}
+

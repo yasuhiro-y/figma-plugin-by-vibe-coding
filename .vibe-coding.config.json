@@ -1,0 +1,12 @@
+{
+  "$schema": "./vibe-coding.schema.json",
+  "_comment": "Figma Plugin by Vibe Coding - User Configuration",
+  
+  "ai": {
+    "target": "cursor"
+  },
+
+  "preferences": {
+    "strictErrorHandling": true
+  }
+}

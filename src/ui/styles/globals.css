@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+ * Figma Plugin Dark Theme - Maximum HMR Stability
+ * Multiple layers of protection against CSS "melting" during hot reloads:
+ * 1. CSS Variables (this file)
+ * 2. Inline styles (main.tsx)  
+ * 3. Forced re-application (HMR handlers)
+ */
+
+/* CRITICAL: Force dark theme variables with maximum specificity */
+:root,
+:root.dark,
+html,
+html.dark,
+html[class*="dark"],
+body.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+/* HMR-Resistant Styles - Force apply even after hot reloads */
+html,
+html.dark,
+:root {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  background-color: hsl(240 10% 3.9%) !important;
+  color: hsl(0 0% 98%) !important;
+}
+
+body,
+body.dark {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background-color: hsl(240 10% 3.9%) !important;
+  color: hsl(0 0% 98%) !important;
+  /* Prevent CSS from disappearing during HMR */
+  min-height: 100vh !important;
+}
+
+#root,
+div[id="root"] {
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: hsl(240 10% 3.9%) !important;
+  color: hsl(0 0% 98%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  /* HMR stability */
+  position: relative !important;
+}
+
+/* Tailwind reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: hsl(240 3.7% 15.9%);
+}
+
+/* Force all common Tailwind classes - Direct CSS */
+.bg-background {
+  background-color: hsl(240 10% 3.9%);
+}
+.text-foreground {
+  color: hsl(0 0% 98%);
+}
+.bg-card {
+  background-color: hsl(240 10% 3.9%);
+}
+.text-card-foreground {
+  color: hsl(0 0% 98%);
+}
+.bg-muted {
+  background-color: hsl(240 3.7% 15.9%);
+}
+.text-muted-foreground {
+  color: hsl(240 5% 64.9%);
+}
+.border {
+  border: 1px solid hsl(240 3.7% 15.9%);
+}
+.border-border {
+  border-color: hsl(240 3.7% 15.9%);
+}
+.border-b {
+  border-bottom: 1px solid hsl(240 3.7% 15.9%);
+}
+
+/* Force shadcn/ui button styles */
+button,
+.btn {
+  background-color: hsl(240 3.7% 15.9%);
+  color: hsl(0 0% 98%);
+  border: 1px solid hsl(240 3.7% 15.9%);
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover,
+.btn:hover {
+  background-color: hsl(240 5% 20%);
+}
+
+/* Force card styles */
+.card {
+  background-color: hsl(240 10% 3.9%);
+  border: 1px solid hsl(240 3.7% 15.9%);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Force layout styles */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.h-screen {
+  height: 100vh;
+}
+.p-4 {
+  padding: 1rem;
+}
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}

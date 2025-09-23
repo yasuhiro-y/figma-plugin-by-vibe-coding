@@ -1,0 +1,126 @@
+{
+  "name": "figma-plugin-by-vibe-coding",
+  "version": "1.0.0", 
+  "description": "Figma Plugin by Vibe Coding - Professional plugin development with AI-assisted coding, React, TypeScript, and shadcn/ui",
+  "keywords": [
+    "figma",
+    "plugin",
+    "typescript",
+    "react",
+    "vite",
+    "shadcn",
+    "boilerplate",
+    "template",
+    "vibe-coding",
+    "cursor-ai"
+  ],
+  "author": {
+    "name": "Yasuhiro Yokota",
+    "email": "yasuhiro@example.com",
+    "url": "https://github.com/yasuhiro-y"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yasuhiro-y/figma-plugin-by-vibe-coding"
+  },
+  "homepage": "https://github.com/yasuhiro-y/figma-plugin-by-vibe-coding#readme",
+  "bugs": {
+    "url": "https://github.com/yasuhiro-y/figma-plugin-by-vibe-coding/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "type": "module",
+  "bin": {
+    "create-figma-plugin-by-vibe-coding": "./scripts/create-plugin.ts"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "scripts/",
+    ".rulesync/",
+    "*.json",
+    "*.jsonc", 
+    "*.ts",
+    "*.md",
+    "*.config.*",
+    "*.schema.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:plugin\" \"pnpm run dev:ui\"",
+    "dev:plugin": "vite build --watch --config vite.config.plugin.ts",
+    "dev:ui": "vite build --watch --config vite.config.ui.ts",
+    "dev:ui-only": "vite --config vite.config.ui.ts --mode development",
+    "build": "pnpm run clean && pnpm run lint:check && pnpm run typecheck && pnpm run build:plugin && pnpm run build:ui && pnpm run build:manifest",
+    "build:safe": "pnpm run lint:check && pnpm run typecheck && pnpm run build:plugin && pnpm run build:ui && pnpm run build:manifest",
+    "build:plugin": "vite build --config vite.config.plugin.ts",
+    "build:ui": "vite build --config vite.config.ui.ts",
+    "build:manifest": "tsx scripts/build-manifest.ts",
+    "preview": "vite preview --config vite.config.ui.ts",
+    "lint": "biome check src/",
+    "lint:check": "biome check src/",
+    "lint:fix": "biome check --fix src/",
+    "format": "biome format --write src/",
+    "format:check": "biome check --formatter-enabled=true --linter-enabled=false src/",
+    "typecheck": "tsc --noEmit",
+    "typecheck:plugin": "tsc --noEmit --project tsconfig.plugin.json",
+    "typecheck:ui": "tsc --noEmit --project tsconfig.ui.json",
+    "clean": "rimraf dist",
+    "test": "vitest",
+    "test:ui": "vitest run",
+    "rules:generate": "rulesync generate",
+    "rules:dev": "rulesync generate --targets cursor,claudecode --features rules,commands,subagents",
+    "rules:gitignore": "rulesync gitignore",
+    "pre-commit": "pnpm run lint:fix && pnpm run format && pnpm run typecheck",
+    "check-all": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
+    "auto-lint": "tsx scripts/auto-lint.ts",
+    "prepare-publish": "tsx scripts/generate-publish-assets.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@figma/plugin-typings": "^1.101.0",
+    "@types/node": "^22.18.5",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "concurrently": "^9.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rimraf": "^6.0.1",
+    "rulesync": "^1.2.3",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vite-plugin-singlefile": "^2.0.2",
+    "vitest": "^2.1.8",
+    "zod": "^3.24.1"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.7",
+    "@radix-ui/react-slider": "^1.2.1",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.1.1",
+    "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.2",
+    "jpeg-js": "^0.4.4"
+  },
+  "overrides": {
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5"
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+}

@@ -1,0 +1,16 @@
+{
+  // Figma Plugin by Vibe Coding - AI Development Rules Configuration
+  // 
+  // ✏️ EDIT THIS FILE TO CHANGE YOUR AI TARGET
+  // 
+  // Available targets: cursor, claudecode, copilot, cline, amazonq, qwen, gemini, windsurf, warp
+  // 
+  // Single target (recommended):    "targets": ["cursor"]
+  // Multiple targets (slower):      "targets": ["cursor", "claudecode"]
+  
+  "targets": ["cursor"],
+  "features": ["rules", "commands", "subagents"],
+  "baseDirs": ["."],
+  "delete": true,
+  "verbose": false
+}

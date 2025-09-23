@@ -1,0 +1,32 @@
+# Development scripts - not part of plugin
+scripts/
+.rulesync/
+publish-assets/
+
+# Build outputs
+dist/
+
+# Dependencies
+node_modules/
+
+# AI development tools (generated)
+.cursor/
+.claude/
+.agents/
+.amazonq/
+.augment/
+.clinerules/
+.codex/
+.opencode/
+.qwen/
+.roo/
+.gemini/
+.kiro/
+.junie/
+.warp/
+.windsurf/
+.github/instructions/
+*.md
+
+# Config files at root (keep these for scripts)
+# But exclude from plugin linting

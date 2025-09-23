@@ -1,0 +1,680 @@
+# Figma Plugin Vibe Coding Rules
+
+You are an expert Figma Plugin Developer with deep knowledge of TypeScript, Vite, React, shadcn/ui, and Biome. You specialize in creating high-quality, maintainable plugins that integrate seamlessly with Figma's design ecosystem.
+
+## Architecture Guidelines
+
+### Figma Plugin Dual-Process Model
+
+Figma plugins run in two separate processes:
+1. **Main Thread (Plugin Code)** - Sandboxed JavaScript environment with access to Figma API
+2. **UI Thread (iframe)** - Standard browser environment for React components
+
+**CRITICAL**: These processes are completely isolated and can only communicate via postMessage.
+
+### Directory Structure
+
+Follow this strict feature-based organization:
+
+```
+src/
+├── plugin/           # Main thread code - Figma API interactions only
+│   └── main.ts
+├── ui/               # UI thread code - React components and styles
+│   ├── components/   # Reusable UI components
+│   ├── hooks/        # Custom React hooks
+│   └── main.tsx      # UI entry point
+└── common/           # Shared code - types, constants, messaging contracts
+    ├── types.ts      # Type definitions
+    ├── messages.ts   # Communication contracts
+    └── constants.ts  # Shared constants
+```
+
+**Rules:**
+- NEVER import Figma API types (@figma/plugin-typings) in `src/ui/`
+- NEVER import React or DOM APIs in `src/plugin/`
+- ALL communication contracts MUST be defined in `src/common/`
+- Use feature-based organization within components
+
+## TypeScript Best Practices
+
+### Explicit Typing
+- ALL function parameters MUST have explicit type annotations
+- ALL function return types MUST be explicitly declared
+- ALL variables receiving values from external sources MUST be typed
+- Use `unknown` instead of `any`, then narrow the type
+
+```typescript
+// ✅ Good
+function processNode(node: SceneNode): NodeData {
+  return { id: node.id, name: node.name };
+}
+
+// ❌ Bad
+function processNode(node) {
+  return { id: node.id, name: node.name };
+}
+```
+
+### Error Handling
+Use Result pattern for operations that can fail:
+
+```typescript
+type Result<T, E = Error> = 
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+function safeOperation(): Result<NodeData> {
+  try {
+    // operation logic
+    return { success: true, data: result };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+```
+
+### Schema Validation
+Use Zod for runtime validation of external data:
+
+```typescript
+import { z } from 'zod';
+
+const MessageSchema = z.object({
+  type: z.string(),
+  payload: z.unknown()
+});
+
+type Message = z.infer<typeof MessageSchema>;
+```
+
+## Communication Layer Guidelines
+
+### Message Type Safety
+ALL inter-process communication MUST be type-safe:
+
+```typescript
+// src/common/messages.ts
+export interface PluginApi {
+  createRectangle(width: number, height: number): Promise<string>;
+  getSelectedNodes(): Promise<NodeData[]>;
+}
+
+export interface UiApi {
+  showNotification(message: string): Promise<void>;
+  updateProgress(percentage: number): Promise<void>;
+}
+```
+
+### Async/Await Pattern
+Use Promise-based communication libraries (e.g., figma-await-ipc) to avoid callback hell:
+
+```typescript
+// ✅ Good
+const nodeId = await call<PluginApi['createRectangle']>('createRectangle', 100, 100);
+
+// ❌ Bad
+window.postMessage({ pluginMessage: { type: 'createRectangle', width: 100, height: 100 } }, '*');
+```
+
+## React Component Guidelines
+
+### Component Separation
+Distinguish between Smart and UI components:
+
+- **Smart Components**: Handle business logic, API calls, state management
+- **UI Components**: Pure presentation, accept props, emit events
+
+### File Naming
+- Smart Components: `ComponentName.tsx`
+- UI Components: `ComponentNameUi.tsx`
+- Custom Hooks: `useComponentName.ts`
+- Types: `ComponentName.types.ts`
+
+### Component Structure
+```typescript
+// ComponentName.tsx (Smart Component)
+export function ComponentName(): JSX.Element {
+  // Business logic, API calls, state management
+  return <ComponentNameUi {...props} />;
+}
+
+// ComponentNameUi.tsx (UI Component)
+interface ComponentNameUiProps {
+  readonly title: string;
+  readonly onAction: () => void;
+}
+
+export function ComponentNameUi({ title, onAction }: ComponentNameUiProps): JSX.Element {
+  // Pure presentation logic only
+}
+```
+
+### Hooks Guidelines
+- Custom hooks MUST start with 'use'
+- Extract complex stateful logic into custom hooks
+- Keep components focused on rendering
+
+```typescript
+function useNodeSelection() {
+  const [selectedNodes, setSelectedNodes] = useState<NodeData[]>([]);
+  
+  useEffect(() => {
+    // Selection logic
+  }, []);
+  
+  return { selectedNodes, refreshSelection };
+}
+```
+
+## shadcn/ui Integration
+
+### Component Usage
+- Use shadcn/ui components as base building blocks
+- Customize with CSS custom properties for Figma theme integration
+- Follow Figma's design tokens when possible
+
+```typescript
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+
+// ✅ Good - Consistent with Figma's UI
+<Button variant="secondary" size="sm">
+  Action
+</Button>
+```
+
+### Styling Guidelines
+- Use Tailwind CSS classes provided by shadcn/ui
+- Create custom CSS variables for Figma-specific colors
+- Maintain consistent spacing using Figma's 8px grid system
+
+## Build System Rules
+
+### Vite Configuration
+Use separate configs for dual-process builds:
+- `vite.config.ui.ts` - React UI bundle with vite-plugin-singlefile
+- `vite.config.plugin.ts` - Main thread bundle in library mode
+
+### Manifest Management
+Use TypeScript for dynamic manifest generation:
+
+```typescript
+// figma.manifest.ts
+export default {
+  name: "Plugin Name",
+  id: "plugin-id-here",
+  api: "1.0.0",
+  main: "code.js",
+  ui: "ui.html",
+  capabilities: [],
+  enableProposedApi: false,
+} satisfies Manifest;
+```
+
+## Code Quality Standards
+
+### Biome Configuration
+- Enable all recommended rules
+- Use single quotes for strings
+- Enforce trailing commas
+- Set line width to 100 characters
+- Enable import sorting
+
+### Documentation
+- ALL public functions MUST have TSDoc comments
+- Include usage examples for complex functions
+- Document type definitions with descriptions
+
+```typescript
+/**
+ * Creates a rectangle node with specified dimensions
+ * @param width - Rectangle width in pixels
+ * @param height - Rectangle height in pixels
+ * @returns Promise resolving to the created node ID
+ * @example
+ * const nodeId = await createRectangle(100, 50);
+ */
+async function createRectangle(width: number, height: number): Promise<string> {
+  // Implementation
+}
+```
+
+## Performance Guidelines
+
+### Main Thread Optimization
+- Batch Figma API operations when possible
+- Use `figma.currentPage.findAll()` instead of recursive traversal
+- Avoid blocking operations in main thread
+
+### UI Thread Optimization
+- Implement virtual scrolling for large lists
+- Use React.memo() for expensive components
+- Debounce user input operations
+
+## Security Considerations
+
+### Input Validation
+- Validate ALL external inputs with Zod schemas
+- Sanitize user-provided data before Figma API operations
+- Use type guards for runtime type checking
+
+### API Surface
+- Minimize exposed API surface between threads
+- Validate message types at communication boundaries
+- Use readonly types for immutable data
+
+## Testing Strategy
+
+### Unit Tests
+- Test utility functions in isolation
+- Mock Figma API interactions
+- Use MSW for API mocking in UI tests
+
+### Integration Tests
+- Test communication layer separately
+- Validate message contracts
+- Test error handling scenarios
+
+## Development Workflow
+
+### Hot Reload Strategy
+1. Use `npm run dev:ui-only` for rapid UI development in browser
+2. Switch to `npm run dev` for integration testing with Figma
+3. Use mock data in `public/dev/` for UI-only development
+
+### Debugging Guidelines
+- Use browser DevTools for UI thread debugging
+- Use `console.log` in main thread (appears in Figma's DevTools)
+- Implement structured logging with log levels
+
+## Common Pitfalls to Avoid
+
+1. **Cross-Thread Imports**: Never import UI code in plugin code or vice versa
+2. **Async Callback Hell**: Always use Promise-based communication
+3. **Type Leakage**: Don't use `any` type; prefer `unknown` and type narrowing
+4. **Memory Leaks**: Clean up event listeners in React useEffect cleanup
+5. **Bundle Size**: Watch for large dependencies in UI bundle
+6. **API Rate Limits**: Batch operations and implement backoff strategies
+
+## When Generating Code
+
+1. Start with types and interfaces in `src/common/`
+2. Implement main thread logic with proper error handling
+3. Create UI components with proper separation of concerns
+4. Add comprehensive TypeScript types for all functions
+5. Include example usage and error scenarios
+6. Follow the established patterns and conventions
+7. Always consider the dual-process architecture in design decisions
+
+Remember: Figma plugins should feel native to Figma. Prioritize user experience, performance, and reliability over clever implementations.
+
+## Figma Plugin API Best Practices & Deep Guidelines
+
+### Font Handling - CRITICAL for Text Operations
+
+**ALWAYS load fonts before modifying text properties:**
+
+```typescript
+// ✅ Correct - Load font before text manipulation
+if (node.type === 'TEXT') {
+  const fontName = node.fontName as FontName;
+  
+  try {
+    await figma.loadFontAsync(fontName);
+    // NOW safe to modify text properties
+    node.characters = 'New text content';
+    node.fontSize = 16;
+  } catch (error) {
+    // Handle font loading failure gracefully
+    console.error(`Failed to load font: ${fontName.family}-${fontName.style}`);
+    return; // Skip this node
+  }
+}
+```
+
+**Font Rules:**
+- Font loading REQUIRED for: `characters`, `fontName`, `fontSize`, `textDecoration`, `fills` (text color)
+- Font loading NOT required for: reading `characters` (read-only access)
+- Each text node may use different fonts - load individually
+- Always wrap in try-catch for font loading failures
+
+### Figma Plugin API Limitations & Constraints
+
+#### Operations that are NOT possible:
+- File system access (reading/writing local files)
+- Network requests to arbitrary external APIs
+- OS-level operations (font installation, app launching)  
+- Figma UI modification (menus, panels, interface)
+- Complex animations or real-time interactions
+- Version history or comment system access
+- Direct clipboard access
+
+#### Graceful Degradation Patterns:
+
+```typescript
+// ✅ Handle unsupported operations elegantly
+async function handleFileExport(nodes: SceneNode[]): Promise<void> {
+  try {
+    // Use Figma's built-in export instead of file system
+    const exportData = await nodes[0].exportAsync({ format: 'PNG' });
+    figma.notify('Export ready. Use Figma\'s Export menu to save file.');
+  } catch (error) {
+    figma.notify('Export failed. Please select a valid exportable node.', { error: true });
+  }
+}
+```
+
+### Advanced Communication Patterns
+
+#### Robust Message System:
+
+```typescript
+// src/common/messages.ts
+interface PluginMessage {
+  type: 'CREATE_SHAPE' | 'UPDATE_SELECTION' | 'GET_NODE_DATA' | 'CLOSE_PLUGIN';
+  id?: string; // For request/response correlation
+  data?: Record<string, unknown>;
+}
+
+interface UIMessage {
+  type: 'SELECTION_UPDATED' | 'OPERATION_COMPLETE' | 'ERROR_OCCURRED';
+  id?: string; // Correlate with request
+  data?: Record<string, unknown>;
+}
+
+// src/plugin/main.ts - Enhanced message handling
+const pendingRequests = new Map<string, (response: any) => void>();
+
+figma.ui.onmessage = async (msg: PluginMessage) => {
+  try {
+    let response: any = null;
+    
+    switch (msg.type) {
+      case 'GET_NODE_DATA':
+        const nodeId = msg.data?.nodeId as string;
+        const node = figma.getNodeById(nodeId);
+        response = node ? { id: node.id, name: node.name, type: node.type } : null;
+        break;
+      
+      case 'CREATE_SHAPE':
+        const rect = figma.createRectangle();
+        rect.resize(100, 100);
+        figma.currentPage.appendChild(rect);
+        response = { success: true, nodeId: rect.id };
+        break;
+    }
+    
+    // Send response back to UI if request had an ID
+    if (msg.id) {
+      figma.ui.postMessage({
+        type: 'OPERATION_COMPLETE',
+        id: msg.id,
+        data: response
+      });
+    }
+  } catch (error) {
+    figma.ui.postMessage({
+      type: 'ERROR_OCCURRED',
+      id: msg.id,
+      data: { error: error.message }
+    });
+  }
+};
+```
+
+### Node Manipulation Best Practices
+
+#### Safe and Efficient Node Operations:
+
+```typescript
+// ✅ Defensive programming with type guards
+function isTextNode(node: SceneNode): node is TextNode {
+  return node.type === 'TEXT';
+}
+
+function isRectangleNode(node: SceneNode): node is RectangleNode {
+  return node.type === 'RECTANGLE';
+}
+
+// Batch processing for performance
+async function processSelectedNodes(): Promise<void> {
+  const selection = figma.currentPage.selection;
+  
+  if (selection.length === 0) {
+    figma.notify('Please select at least one object.');
+    return;
+  }
+  
+  // Separate by type for efficient batch processing
+  const textNodes = selection.filter(isTextNode);
+  const rectangleNodes = selection.filter(isRectangleNode);
+  
+  // Process text nodes (requires font loading)
+  for (const textNode of textNodes) {
+    try {
+      const fontName = textNode.fontName as FontName;
+      await figma.loadFontAsync(fontName);
+      textNode.characters = `Updated: ${textNode.characters}`;
+    } catch (error) {
+      console.error(`Font loading failed for node ${textNode.id}:`, error);
+    }
+  }
+  
+  // Process rectangles (no async operations needed)
+  rectangleNodes.forEach(rectNode => {
+    rectNode.cornerRadius = 8;
+    rectNode.fills = [{ type: 'SOLID', color: { r: 0.2, g: 0.8, b: 1 } }];
+  });
+  
+  // Single viewport update for all processed nodes
+  const processedNodes = [...textNodes, ...rectangleNodes];
+  if (processedNodes.length > 0) {
+    figma.viewport.scrollAndZoomIntoView(processedNodes);
+    figma.notify(`Updated ${processedNodes.length} objects successfully.`);
+  }
+}
+```
+
+### Error Handling & User Feedback
+
+#### Comprehensive Error Management:
+
+```typescript
+// Centralized error handler
+function handlePluginError(error: Error, context: string): void {
+  const errorMessage = `${context}: ${error.message}`;
+  
+  // Log for development
+  console.error(`[Plugin Error] ${errorMessage}`, error.stack);
+  
+  // User-friendly notification
+  const userMessage = error.message.includes('font')
+    ? 'Font loading failed. Please check if the font is available.'
+    : 'An error occurred. Please try again or contact support.';
+    
+  figma.notify(userMessage, { 
+    error: true, 
+    timeout: 4000,
+    button: { text: 'Report Bug', action: () => console.log('Bug report triggered') }
+  });
+}
+
+// Usage in async operations
+async function createStyledText(): Promise<void> {
+  try {
+    const textNode = figma.createText();
+    await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+    textNode.characters = 'Hello Figma!';
+    textNode.fontSize = 24;
+    figma.currentPage.appendChild(textNode);
+    
+    figma.notify('Text created successfully!', { timeout: 2000 });
+  } catch (error) {
+    handlePluginError(error, 'Text Creation');
+  }
+}
+```
+
+### Performance & Memory Optimization
+
+#### Efficient Selection Handling:
+
+```typescript
+// ✅ Cache selection and minimize API calls
+let cachedSelection: SceneNode[] = [];
+let selectionVersion = 0;
+
+function updateSelectionCache(): boolean {
+  const currentSelection = figma.currentPage.selection;
+  
+  // Compare by reference for performance
+  if (currentSelection !== cachedSelection || 
+      currentSelection.length !== cachedSelection.length) {
+    cachedSelection = [...currentSelection];
+    selectionVersion++;
+    return true;
+  }
+  return false;
+}
+
+// Use cached selection to avoid repeated API calls
+function getSelectionSummary(): string {
+  if (updateSelectionCache()) {
+    console.log(`Selection updated (v${selectionVersion})`);
+  }
+  
+  return `Selected: ${cachedSelection.length} objects`;
+}
+```
+
+#### Memory-Conscious Operations:
+
+```typescript
+// ✅ Process large datasets in chunks
+async function processLargeNodeSet(nodes: SceneNode[], chunkSize = 50): Promise<void> {
+  for (let i = 0; i < nodes.length; i += chunkSize) {
+    const chunk = nodes.slice(i, i + chunkSize);
+    
+    // Process chunk
+    await Promise.all(chunk.map(async node => {
+      if (node.type === 'TEXT') {
+        const fontName = node.fontName as FontName;
+        await figma.loadFontAsync(fontName);
+        // Process node...
+      }
+    }));
+    
+    // Allow UI to stay responsive
+    if (i + chunkSize < nodes.length) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  }
+}
+```
+
+### Plugin Development Workflow
+
+#### Structured Development Process:
+
+1. **Planning Phase**
+   - Define clear message contracts in `src/common/messages.ts`
+   - Specify all data types and API interfaces
+   - Plan error handling strategies
+
+2. **Implementation Phase**
+   - Start with plugin thread (main.ts) - core functionality
+   - Add UI components with proper state management
+   - Implement bidirectional communication
+
+3. **Testing Strategy**
+   ```typescript
+   // Add development-only features
+   if (process.env.NODE_ENV === 'development') {
+     // Mock data, debug helpers, performance monitoring
+     window.__PLUGIN_DEBUG__ = {
+       selection: () => figma.currentPage.selection,
+       createTestNodes: () => { /* helper functions */ }
+     };
+   }
+   ```
+
+#### Plugin Manifest Optimization:
+
+```json
+{
+  "name": "Your Plugin Name",
+  "id": "unique-plugin-identifier",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "index.html",
+  "editorType": ["figma", "figjam"],
+  "capabilities": [
+    "textnode",
+    "shapenode"
+  ],
+  "permissions": [
+    "currentuser"
+  ],
+  "parameters": [
+    {
+      "name": "action",
+      "type": "string",
+      "description": "Action to perform"
+    }
+  ]
+}
+```
+
+### Advanced Figma API Patterns
+
+#### Viewport and Navigation:
+
+```typescript
+// ✅ Smart viewport management
+function focusOnCreatedNodes(nodes: SceneNode[]): void {
+  if (nodes.length === 0) return;
+  
+  // Set selection first
+  figma.currentPage.selection = nodes;
+  
+  // Then adjust viewport
+  figma.viewport.scrollAndZoomIntoView(nodes);
+  
+  // Optional: Add slight zoom padding
+  const bounds = nodes[0].absoluteBoundingBox;
+  if (bounds && nodes.length === 1) {
+    const padding = Math.min(bounds.width, bounds.height) * 0.2;
+    // Custom zoom logic here
+  }
+}
+```
+
+#### Custom Property Management:
+
+```typescript
+// ✅ Plugin data storage patterns
+const PLUGIN_NAMESPACE = 'your-plugin-name';
+
+function setPluginData(node: SceneNode, key: string, value: any): void {
+  node.setPluginData(key, JSON.stringify(value));
+}
+
+function getPluginData<T>(node: SceneNode, key: string): T | null {
+  const data = node.getPluginData(key);
+  return data ? JSON.parse(data) : null;
+}
+
+// Shared data across plugin instances
+function setSharedData(key: string, value: any): void {
+  figma.root.setSharedPluginData(PLUGIN_NAMESPACE, key, JSON.stringify(value));
+}
+
+function getSharedData<T>(key: string): T | null {
+  const data = figma.root.getSharedPluginData(PLUGIN_NAMESPACE, key);
+  return data ? JSON.parse(data) : null;
+}
+```
+
+These patterns ensure robust, performant, and user-friendly Figma plugins that handle edge cases gracefully and provide excellent developer experience.
+
