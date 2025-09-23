@@ -39,13 +39,15 @@ A modern Figma plugin development setup with TypeScript, React, and AI developme
 
 ### 1. Create New Plugin Project
 
+**⚠️ Important: Don't clone this repository directly!** Use the create command instead:
+
 ```bash
 # Create a new plugin using npm create command
 npm create figma-plugin-by-vibe-coding my-awesome-plugin
 
-# Or with AI tool selection
-npm create figma-plugin-by-vibe-coding my-plugin cursor
-npm create figma-plugin-by-vibe-coding my-plugin claudecode
+# Or with yarn/pnpm
+yarn create figma-plugin-by-vibe-coding my-awesome-plugin
+pnpm create figma-plugin-by-vibe-coding my-awesome-plugin
 
 # Navigate to your project
 cd my-awesome-plugin
@@ -173,16 +175,18 @@ npm run build:clean  # Full clean build (for releases only)
 ls .cursor CLAUDE.md  # Verify file generation
 ```
 
-## 📦 npm create Command
+## 📦 Package Usage
 
 ```bash
 # Basic usage
-npm create figma-plugin-by-vibe-coding my-plugin
+npx figma-plugin-by-vibe-coding my-plugin
 
 # With AI tool selection
-npm create figma-plugin-by-vibe-coding my-plugin cursor
-npm create figma-plugin-by-vibe-coding my-plugin claudecode
+npx figma-plugin-by-vibe-coding my-plugin cursor
+npx figma-plugin-by-vibe-coding my-plugin claudecode
 ```
+
+> **Note**: Use `npx` instead of `npm create` for this package. The `npm create` command looks for packages with `create-` prefix, but our package uses the standard binary approach.
 
 ## 📝 License
 

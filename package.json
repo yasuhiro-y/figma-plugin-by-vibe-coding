@@ -16,8 +16,8 @@
   ],
   "author": {
     "name": "Yasuhiro Yokota",
-    "email": "yasuhiro@example.com",
-    "url": "https://github.com/yasuhiro-y"
+    "email": "yy@yasuhiroyokota.today",
+    "url": "https://x.com/yktyshr"
   },
   "license": "MIT",
   "repository": {
@@ -32,15 +32,10 @@
     "node": ">=18.0.0"
   },
   "type": "module",
-  "bin": {
-    "create-figma-plugin-by-vibe-coding": "./bin/create-plugin.js"
-  },
   "files": [
     "src/",
-    "bin/",
     "scripts/auto-lint.ts",
     "scripts/build-manifest.ts",
-    "scripts/create-plugin.ts",
     "scripts/generate-publish-assets.ts",
     ".rulesync/",
     "figma.manifest.ts",
@@ -53,9 +48,6 @@
     "*.config.*",
     "*.schema.json"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "dev": "pnpm run build:manifest && concurrently \"pnpm run dev:plugin\" \"pnpm run dev:ui\"",
     "dev:plugin": "vite build --watch --config vite.config.plugin.ts",
@@ -66,8 +58,6 @@
     "build:plugin": "vite build --config vite.config.plugin.ts",
     "build:ui": "vite build --config vite.config.ui.ts",
     "build:manifest": "tsx scripts/build-manifest.ts",
-    "build:create": "tsc scripts/create-plugin.ts --outDir bin --target es2022 --module nodenext --moduleResolution nodenext --allowSyntheticDefaultImports --esModuleInterop",
-    "prepublishOnly": "pnpm run build:create",
     "preview": "vite preview --config vite.config.ui.ts",
     "lint": "biome check src/",
     "lint:check": "biome check src/",
@@ -87,10 +77,7 @@
     "check-all": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
     "auto-lint": "tsx scripts/auto-lint.ts",
     "prepare-publish": "tsx scripts/generate-publish-assets.ts",
-    "release": "tsx scripts/release.ts",
-    "release:minor": "npm version minor && npm publish",
-    "release:patch": "npm version patch && npm publish",
-    "release:major": "npm version major && npm publish"
+"release": "echo 'This is a boilerplate template. Please use create-figma-plugin-by-vibe-coding to generate new projects.'"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
