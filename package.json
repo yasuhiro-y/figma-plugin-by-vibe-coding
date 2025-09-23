@@ -1,7 +1,7 @@
 {
   "name": "figma-plugin-by-vibe-coding",
   "version": "1.0.0", 
-  "description": "Figma Plugin by Vibe Coding - Professional plugin development with AI-assisted coding, React, TypeScript, and shadcn/ui",
+  "description": "Figma Plugin by Vibe Coding - Plugin development boilerplate with AI tools, React, TypeScript, and shadcn/ui",
   "keywords": [
     "figma",
     "plugin",
