@@ -293,6 +293,38 @@ if (requiresNetworkAccess && manifest.networkAccess?.allowedDomains[0] === 'none
 }
 ```
 
+## CRITICAL: Avoid Manifest Property Errors
+
+**LLM INSTRUCTION**: Only use officially supported manifest properties to prevent "unexpected extra property" errors:
+
+### ✅ Officially Supported Properties
+```typescript
+interface PluginManifest {
+  name: string;              // Required
+  id: string;               // Required
+  api: string;              // Required ('1.0.0')
+  main: string;             // Required ('code.js')
+  ui?: string;              // Optional ('index.html')
+  capabilities?: string[];   // ['inspect', 'export', 'codegen', 'textreview']
+  enableProposedApi?: boolean;
+  editorType?: Array<'figma' | 'figjam'>;
+  networkAccess?: { allowedDomains: string[] };
+  parameters?: Array<{ name: string; key: string; description?: string }>;
+  menu?: Array<{ name: string; command: string; parameters?: Record<string, string> }>;
+  relaunchButtons?: Array<{ command: string; name: string }>;
+}
+```
+
+### ❌ NEVER Use These Properties
+```typescript
+// These cause "unexpected extra property" errors:
+// description: string     // Not supported
+// author: string         // Not supported  
+// version: string        // Not supported
+// keywords: string[]     // Not supported
+// homepage: string       // Not supported
+```
+
 **NEVER start coding without understanding the current manifest configuration.**
 
 ## CRITICAL: Remove Demo Code When Building Real Features

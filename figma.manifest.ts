@@ -35,23 +35,34 @@ export default {
     // Example: ['api.example.com', 'cdn.example.com']
   },
 
-  // Additional metadata (optional but recommended)
-  // description: 'A professional boilerplate for building sophisticated Figma plugins',
-  // author: 'Your Name',
-  // version: '1.0.0',
 } satisfies PluginManifest;
 
-// Type definition for manifest (for better development experience)
+// Official Figma Plugin Manifest Type Definition
+// Only includes properties officially supported by Figma
 interface PluginManifest {
   name: string;
   id: string;
   api: string;
   main: string;
-  ui: string;
+  ui?: string;
   capabilities?: string[];
   enableProposedApi?: boolean;
   editorType?: Array<'figma' | 'figjam'>;
   networkAccess?: {
     allowedDomains: string[];
   };
+  parameters?: Array<{
+    name: string;
+    key: string;
+    description?: string;
+  }>;
+  menu?: Array<{
+    name: string;
+    command: string;
+    parameters?: Record<string, string>;
+  }>;
+  relaunchButtons?: Array<{
+    command: string;
+    name: string;
+  }>;
 }
