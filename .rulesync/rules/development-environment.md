@@ -369,56 +369,96 @@ function handleUserFeature(msg: UserFeatureMessage): void {
 
 **Remember**: Demo code is ONLY for showing plugin structure - always replace with real features.**
 
-## CRITICAL: Code Compatibility Over Configuration
+## CRITICAL: Figma JavaScript Compatibility Guidelines
 
-**LLM INSTRUCTION**: When encountering ES2020+ compatibility errors, fix the production code rather than changing build targets. Figma's plugin environment has specific JavaScript compatibility requirements.
+**LLM INSTRUCTION**: Figma supports **ES6+ features including async/await (ES2017)**, which are essential for plugin development. However, avoid newer ES2019+ features that cause syntax errors.
 
+### ✅ Recommended Build Configuration
 ```typescript
-// ❌ WRONG APPROACH - Changing build target to avoid code fixes
-// esbuild: { target: 'es2022' }  // Causes "Unexpected token {" errors
-
-// ✅ CORRECT APPROACH - Use ES2017 build target and compatible code patterns
-// Build Configuration (MANDATORY):
+// Optimal Figma plugin compatibility
 // vite.config.plugin.ts: target: 'es2017'
 // tsconfig.plugin.json: "target": "ES2017", "lib": ["ES2017"]
+```
 
-// 1. Optional Catch Binding (ES2019) → ES2017
-// ❌ ES2019: catch { } causes "Unexpected token {" error
+### ✅ FULLY SUPPORTED Features (Use freely)
+```typescript
+// ES6 (ES2015) - Fully supported
+const, let, arrow functions, classes, template literals, destructuring
+const message = `Hello ${name}!`;
+const data = { id, name, ...otherProps }; // Object spread IS supported
+const [first, ...rest] = array; // Array spread IS supported
+
+// ES2017 - ESSENTIAL for Figma plugins
+async function loadFont(): Promise<void> {
+  await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+}
+
+// ES2018 - Generally supported
+const newObj = { ...baseObj, updatedProp: newValue }; // Object spread works
+```
+
+### ❌ AVOID These Features (Cause syntax errors)
+```typescript
+// ES2019 - Optional Catch Binding
+// ❌ CAUSES "Unexpected token {" ERROR
 try {
   riskyOperation();
 } catch {  // ERROR in Figma!
   handleError();
 }
 
-// ✅ ES2017: catch (error)
+// ✅ USE INSTEAD: Traditional catch with parameter
 try {
   riskyOperation();
-} catch (error) {  // Compatible with Figma
+} catch (error) {  // Always works
   handleError();
 }
 
-// 2. Spread Operators in Objects (ES2018) → ES2017
-// ❌ ES2018: { ...obj, prop: value }
-const newObj = { ...baseObj, updatedProp: newValue };
+// ES2020+ - May cause issues
+// ❌ Avoid if possible
+const result = obj?.prop?.method?.(); // Optional chaining
+const value = input ?? defaultValue;  // Nullish coalescing
 
-// ✅ ES2017: Object.assign()
-const newObj = Object.assign({}, baseObj, { updatedProp: newValue });
-
-// 3. Optional Chaining (ES2020) → ES2017
-// ❌ ES2020: obj?.prop?.method?.()
-const result = obj?.prop?.method?.();
-
-// ✅ ES2017: Explicit null checks
+// ✅ USE INSTEAD: Explicit checks
 const result = obj && obj.prop && obj.prop.method ? obj.prop.method() : undefined;
+const value = input !== null && input !== undefined ? input : defaultValue;
+```
 
-// 4. Nullish Coalescing (ES2020) → ES2017
-// ❌ ES2020: value ?? defaultValue
-const finalValue = inputValue ?? defaultValue;
-
-// ✅ ES2017: Explicit undefined/null checks
-const finalValue = (typeof inputValue !== 'undefined' && inputValue !== null) 
-  ? inputValue 
-  : defaultValue;
+### 🎯 Best Practices for Figma Plugin Development
+```typescript
+// ✅ RECOMMENDED: Modern ES6+ with async/await
+export class PluginAPI {
+  async createRectangle(options: RectangleOptions): Promise<string> {
+    const rect = figma.createRectangle();
+    rect.resize(options.width, options.height);
+    
+    if (options.fills) {
+      rect.fills = [...options.fills]; // Spread operator works fine
+    }
+    
+    figma.currentPage.appendChild(rect);
+    return rect.id;
+  }
+  
+  async processSelection(): Promise<NodeData[]> {
+    const selection = figma.currentPage.selection;
+    
+    return Promise.all(
+      selection.map(async (node) => {
+        if (node.type === 'TEXT') {
+          const fontName = node.fontName as FontName;
+          await figma.loadFontAsync(fontName); // async/await is essential
+        }
+        
+        return {
+          id: node.id,
+          name: node.name,
+          type: node.type,
+        };
+      })
+    );
+  }
+}
 ```
 
 **LLM INSTRUCTION**: This development environment ensures reliable, type-safe plugin development with optimal DX for AI-assisted coding.
