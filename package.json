@@ -1,6 +1,6 @@
 {
   "name": "figma-plugin-by-vibe-coding",
-  "version": "1.0.0", 
+  "version": "1.0.1",
   "description": "Figma Plugin by Vibe Coding - Plugin development boilerplate with AI tools, React, TypeScript, and shadcn/ui",
   "keywords": [
     "figma",
@@ -40,7 +40,7 @@
     "bin/",
     "scripts/auto-lint.ts",
     "scripts/build-manifest.ts",
-    "scripts/create-plugin.ts", 
+    "scripts/create-plugin.ts",
     "scripts/generate-publish-assets.ts",
     ".rulesync/",
     "figma.manifest.ts",
@@ -48,7 +48,7 @@
     "vite.config.*.ts",
     "tailwind.config.ts",
     "*.json",
-    "*.jsonc", 
+    "*.jsonc",
     "*.md",
     "*.config.*",
     "*.schema.json"
