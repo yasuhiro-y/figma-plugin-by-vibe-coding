@@ -106,7 +106,13 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
 // ============================================================================
 
 /**
- * Handle rectangle creation with comprehensive error handling
+ * ❌❌❌ DEMO CODE - DELETE THIS FUNCTION WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 
+ * 🚨 WARNING: This is SAMPLE CODE for demonstration purposes only!
+ * When you start building your actual plugin features, DELETE this function entirely.
+ * It will interfere with your real implementation and create confusion.
+ * 
+ * ✅ TO DELETE: Remove this entire function and its usage in the switch statement above
  */
 async function handleCreateRectangle(msg: CreateRectangleMessage): Promise<Result<string>> {
   try {
@@ -132,7 +138,13 @@ async function handleCreateRectangle(msg: CreateRectangleMessage): Promise<Resul
 }
 
 /**
- * Handle random shape creation with comprehensive error handling
+ * ❌❌❌ DEMO CODE - DELETE THIS FUNCTION WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 
+ * 🚨 WARNING: This is SAMPLE CODE for demonstration purposes only!
+ * When you start building your actual plugin features, DELETE this function entirely.
+ * It will interfere with your real implementation and create confusion.
+ * 
+ * ✅ TO DELETE: Remove this entire function and its usage in the switch statement above
  */
 async function handleCreateRandomShape(
   _msg: CreateRandomShapeMessage,
@@ -149,7 +161,13 @@ async function handleCreateRandomShape(
 }
 
 /**
- * Creates a rectangle with specified options and returns its ID
+ * ❌❌❌ DEMO CODE - DELETE THIS FUNCTION WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 
+ * 🚨 WARNING: This is SAMPLE CODE for demonstration purposes only!
+ * When you start building your actual plugin features, DELETE this function entirely.
+ * It will interfere with your real implementation and create confusion.
+ * 
+ * ✅ TO DELETE: Remove this entire function and replace with your actual node creation logic
  */
 function createRectangleNode(options: CreateNodeOptions): string {
   const rect = figma.createRectangle();
@@ -210,7 +228,13 @@ function createRectangleNode(options: CreateNodeOptions): string {
 }
 
 /**
- * Creates a random shape with random properties
+ * ❌❌❌ DEMO CODE - DELETE THIS FUNCTION WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 
+ * 🚨 WARNING: This is SAMPLE CODE for demonstration purposes only!
+ * When you start building your actual plugin features, DELETE this function entirely.
+ * It will interfere with your real implementation and create confusion.
+ * 
+ * ✅ TO DELETE: Remove this entire function and replace with your actual node creation logic
  */
 function createRandomShapeNode(): {
   type: string;
