@@ -375,12 +375,15 @@ function handleUserFeature(msg: UserFeatureMessage): void {
 
 ```typescript
 // ❌ WRONG APPROACH - Changing build target to avoid code fixes
-// esbuild: { target: 'es2022' }
+// esbuild: { target: 'es2022' }  // Causes "Unexpected token {" errors
 
-// ✅ CORRECT APPROACH - Fix the actual code for ES2017 compatibility
+// ✅ CORRECT APPROACH - Use ES2017 build target and compatible code patterns
+// Build Configuration (MANDATORY):
+// vite.config.plugin.ts: target: 'es2017'
+// tsconfig.plugin.json: "target": "ES2017", "lib": ["ES2017"]
 
 // 1. Optional Catch Binding (ES2019) → ES2017
-// ❌ ES2019: catch { }
+// ❌ ES2019: catch { } causes "Unexpected token {" error
 try {
   riskyOperation();
 } catch {  // ERROR in Figma!
@@ -394,21 +397,21 @@ try {
   handleError();
 }
 
-// 2. Spread Operators in Objects
+// 2. Spread Operators in Objects (ES2018) → ES2017
 // ❌ ES2018: { ...obj, prop: value }
 const newObj = { ...baseObj, updatedProp: newValue };
 
 // ✅ ES2017: Object.assign()
 const newObj = Object.assign({}, baseObj, { updatedProp: newValue });
 
-// 3. Optional Chaining (ES2020)
+// 3. Optional Chaining (ES2020) → ES2017
 // ❌ ES2020: obj?.prop?.method?.()
 const result = obj?.prop?.method?.();
 
 // ✅ ES2017: Explicit null checks
 const result = obj && obj.prop && obj.prop.method ? obj.prop.method() : undefined;
 
-// 4. Nullish Coalescing (ES2020)
+// 4. Nullish Coalescing (ES2020) → ES2017
 // ❌ ES2020: value ?? defaultValue
 const finalValue = inputValue ?? defaultValue;
 
@@ -416,13 +419,6 @@ const finalValue = inputValue ?? defaultValue;
 const finalValue = (typeof inputValue !== 'undefined' && inputValue !== null) 
   ? inputValue 
   : defaultValue;
-
-// 5. Array.flat() (ES2019)
-// ❌ ES2019: array.flat()
-const flattened = nestedArray.flat();
-
-// ✅ ES2017: Manual flattening
-const flattened = nestedArray.reduce((acc, val) => acc.concat(val), []);
 ```
 
 **LLM INSTRUCTION**: This development environment ensures reliable, type-safe plugin development with optimal DX for AI-assisted coding.

@@ -47,7 +47,11 @@ export default defineConfig({
       },
     },
 
-    // Target environment for plugin code (Figma runtime supports ES2017)
+    // Target ES2017 for Figma plugin compatibility (CRITICAL)
+    // Figma environment does NOT support ES2018+ features like:
+    // - Optional Catch Binding (catch {})
+    // - Object Spread Properties
+    // - Async Iterators
     target: 'es2017',
   },
 
@@ -82,7 +86,8 @@ export default defineConfig({
 
   // Esbuild configuration for TypeScript transformation
   esbuild: {
-    // Target ES2017 for Figma plugin runtime compatibility
+    // Target ES2017 for Figma plugin compatibility (CRITICAL)
+    // Prevents Optional Catch Binding and other ES2018+ syntax errors
     target: 'es2017',
 
     // Enable tree shaking
