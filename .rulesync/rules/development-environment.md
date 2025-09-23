@@ -295,6 +295,48 @@ if (requiresNetworkAccess && manifest.networkAccess?.allowedDomains[0] === 'none
 
 **NEVER start coding without understanding the current manifest configuration.**
 
+## CRITICAL: Remove Demo Code When Building Real Features
+
+**LLM INSTRUCTION**: When user requests to build their actual plugin features, ALWAYS remove/replace the demo boilerplate code first.
+
+### Demo Code to Remove
+
+```typescript
+// ❌ DELETE these demo functions when starting real development:
+- createRectangleNode() functions
+- createRandomShape() functionality  
+- useRandomShapeGenerator hook
+- Demo message handlers in plugin/main.ts
+- Sample UI components showing rectangles/shapes
+
+// ✅ REPLACE with user's actual requirements:
+- User-specific API functions
+- Real business logic hooks
+- Actual UI components for the feature
+- Proper message handlers for real functionality
+```
+
+### Cleanup Process
+
+1. **Ask User**: "What specific functionality do you want to implement?"
+2. **Remove Demo Code**: Delete all `createRectangle*` and `createRandomShape*` related code
+3. **Clean Messages**: Remove demo message types from `src/common/messages.ts`
+4. **Update UI**: Replace demo buttons/panels with actual feature UI
+5. **Implement Real Logic**: Build user's requested functionality
+
+```typescript
+// ✅ EXAMPLE: Clean removal and replacement
+// Before: Demo rectangle creation
+function handleCreateRectangle(msg: CreateRectangleMessage): void { ... }
+
+// After: User's actual feature
+function handleUserFeature(msg: UserFeatureMessage): void { 
+  // Real implementation based on user requirements
+}
+```
+
+**Remember**: Demo code is ONLY for showing plugin structure - always replace with real features.**
+
 ## CRITICAL: Code Compatibility Over Configuration
 
 **LLM INSTRUCTION**: When encountering ES2020+ compatibility errors, fix the production code rather than changing build targets. Figma's plugin environment has specific JavaScript compatibility requirements.

@@ -11,6 +11,34 @@ Based on the user's request for a new plugin feature, generate a complete implem
 3. Determine necessary shadcn/ui components
 4. Plan error handling and user feedback
 
+## CRITICAL: Demo Code Cleanup First
+
+**MANDATORY**: Before implementing any new features, remove ALL demo/boilerplate code:
+
+### 🗑️ Remove These Demo Files/Functions:
+```typescript
+// Delete demo functions:
+- handleCreateRectangle() in src/plugin/main.ts
+- handleCreateRandomShape() in src/plugin/main.ts
+- useRandomShapeGenerator() hook in src/ui/hooks/features/
+- Any createRectangle* related code
+
+// Clean message types:
+- 'CREATE_RECTANGLE' from src/common/messages.ts
+- 'CREATE_RANDOM_SHAPE' from src/common/messages.ts
+- Related CreateRectangleMessage, CreateRandomShapeMessage types
+
+// Update UI components:
+- Remove demo buttons from src/ui/components/App.tsx
+- Remove demo-related imports and hooks
+```
+
+### ✅ After Cleanup:
+- Clean `src/plugin/main.ts` with only essential message handlers
+- Empty `src/ui/hooks/features/` directory for new feature hooks
+- Clean `src/common/messages.ts` with only base types
+- Simplified `src/ui/components/App.tsx` ready for new features
+
 ## Implementation Steps
 
 ### 1. Type Definitions (src/common/)
