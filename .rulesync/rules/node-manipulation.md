@@ -571,4 +571,64 @@ interface ValidationResult {
 }
 ```
 
-**LLM INSTRUCTION**: These node manipulation patterns are essential for reliable plugin development. Always validate node state, handle readonly properties correctly, and use proper type guards.
+## CRITICAL: Font Loading for Text Operations
+
+**MANDATORY**: Font loading MUST happen BEFORE creating or manipulating ANY text nodes. Creating a text node without pre-loading fonts causes immediate errors.
+
+```typescript
+// ❌ WRONG - Creates text node then tries to load font (ERROR!)
+const textNode = figma.createText();  // ERROR: No font loaded
+textNode.characters = 'Hello World';
+
+// ❌ WRONG - Load font after creating text node (ERROR!)
+const textNode = figma.createText();  // ERROR: No font loaded
+await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+textNode.characters = 'Hello World';
+
+// ✅ CORRECT - Load font BEFORE creating text node
+await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+const textNode = figma.createText();
+textNode.characters = 'Hello World';
+```
+
+**LLM INSTRUCTION**: Text node creation requires a loaded font. Always load the font first, never create the text node and then attempt to load fonts.
+
+### Font Loading Error Handling
+
+```typescript
+async function createTextWithFont(text: string, fontName: FontName): Promise<TextNode | null> {
+  try {
+    // CRITICAL: Load font BEFORE creating text node
+    await figma.loadFontAsync(fontName);
+    
+    // Now safe to create and modify text
+    const textNode = figma.createText();
+    textNode.fontName = fontName;
+    textNode.characters = text;
+    
+    return textNode;
+  } catch (error) {
+    console.error(`Failed to load font ${fontName.family}-${fontName.style}:`, error);
+    figma.notify(`Font "${fontName.family}" not available`, { error: true });
+    return null;
+  }
+}
+
+// ✅ BATCH FONT LOADING - For multiple text nodes
+async function loadRequiredFonts(fontNames: FontName[]): Promise<FontName[]> {
+  const loadedFonts: FontName[] = [];
+  
+  await Promise.all(fontNames.map(async (fontName) => {
+    try {
+      await figma.loadFontAsync(fontName);
+      loadedFonts.push(fontName);
+    } catch (error) {
+      console.warn(`Font ${fontName.family}-${fontName.style} not available`);
+    }
+  }));
+  
+  return loadedFonts;
+}
+```
+
+**LLM INSTRUCTION**: These node manipulation patterns are essential for reliable plugin development. Always validate node state, handle readonly properties correctly, use proper type guards, and NEVER create text nodes without loading fonts first.
