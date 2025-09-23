@@ -1,5 +1,20 @@
 # Development Environment & Build System Guidelines
 
+## CRITICAL: Production Code Over Configuration Changes
+
+**LLM INSTRUCTION**: When encountering compatibility issues (ES2020+, TypeScript errors), PRIORITIZE fixing the actual production code instead of changing build configurations. Configuration changes often hide underlying code quality issues.
+
+```typescript
+// ❌ WRONG APPROACH - Changing target to avoid fixing code
+// esbuild: { target: 'es2022' }  // Avoiding fixing spread operator
+
+// ✅ CORRECT APPROACH - Fix the actual code
+// Instead of: const obj = { ...baseObj, ...updates };
+const obj = Object.assign({}, baseObj, updates);  // ES2017 compatible
+```
+
+**Configuration changes should be LAST resort, not first response.**
+
 ## CRITICAL: Figma Desktop App Requirement
 
 **LLM INSTRUCTION**: Always inform users that the Figma desktop app is MANDATORY for plugin development. Browser version cannot run local plugins.
@@ -250,6 +265,53 @@ import path from 'node:path';
 
 // ❌ Avoid legacy imports
 // import path from 'path';
+```
+
+## CRITICAL: Pre-Coding Manifest Verification
+
+**LLM INSTRUCTION**: ALWAYS verify the manifest configuration before starting any coding session. Read `figma.manifest.ts` to understand:
+
+1. **Plugin Identity**: Check name, id, version
+2. **Capabilities**: Verify enabled features match requirements
+3. **Network Access**: Confirm allowed domains for API calls
+4. **Editor Support**: Ensure figma/figjam compatibility as needed
+
+```typescript
+// ✅ ALWAYS check manifest first
+// 1. Read figma.manifest.ts
+// 2. Verify plugin ID is not '0000000000000000000'
+// 3. Confirm capabilities match feature requirements
+// 4. Check networkAccess for external API needs
+
+// Example manifest verification:
+if (manifest.id === '0000000000000000000') {
+  // Generate unique plugin ID for development
+}
+
+if (requiresNetworkAccess && manifest.networkAccess?.allowedDomains[0] === 'none') {
+  // Add required domains to networkAccess
+}
+```
+
+**NEVER start coding without understanding the current manifest configuration.**
+
+## CRITICAL: Code Compatibility Over Configuration
+
+**LLM INSTRUCTION**: When encountering ES2020+ compatibility errors, fix the production code rather than changing build targets. Figma's plugin environment has specific JavaScript compatibility requirements.
+
+```typescript
+// ❌ WRONG APPROACH - Changing build target to avoid code fixes
+// esbuild: { target: 'es2022' }
+
+// ✅ CORRECT APPROACH - Fix the actual code for ES2017 compatibility
+// Instead of spread operators: { ...obj, prop: value }
+Object.assign({}, obj, { prop: value })
+
+// Instead of optional chaining: obj?.prop?.method?.()
+obj && obj.prop && obj.prop.method && obj.prop.method()
+
+// Instead of nullish coalescing: value ?? defaultValue
+typeof value !== 'undefined' && value !== null ? value : defaultValue
 ```
 
 **LLM INSTRUCTION**: This development environment ensures reliable, type-safe plugin development with optimal DX for AI-assisted coding.
