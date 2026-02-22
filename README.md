@@ -139,6 +139,21 @@ src/
 └── .rulesync/        # AI development rules (auto-generated)
 ```
 
+## 📚 AI Development Guides (New!)
+
+**Perfect for coding beginners using AI assistance!**
+
+We've created comprehensive guides for developing Figma plugins with AI tools like Claude, ChatGPT, or Cursor AI:
+
+- **[📖 Complete Guide Collection](./docs/ai-guides/)** - Start here for the full overview
+- **[🎯 Beginner Guide](./docs/ai-guides/beginner-guide.md)** - Perfect if you're new to coding
+- **[🤖 AI Development Patterns](./docs/ai-guides/ai-development-patterns.md)** - Specific prompts and templates
+- **[🔧 Common Mistakes & Solutions](./docs/ai-guides/common-mistakes.md)** - Troubleshooting guide
+- **[📋 Step-by-Step Development](./docs/ai-guides/step-by-step-development.md)** - Complete workflow
+- **[🐛 Debugging Guide](./docs/ai-guides/debugging-guide.md)** - When things go wrong
+
+These guides include specific AI prompts, exact error solutions, and step-by-step instructions designed for beginners who want to build professional Figma plugins using AI assistance.
+
 ## 🎯 Demo Features
 
 ### Random Shape Generation
