@@ -5,18 +5,26 @@
  * All communication between threads must go through postMessage and be type-safe.
  */
 
-import type { Result } from './types.js';
+import type { 
+  Result, 
+  PageData, 
+  DocumentData, 
+  PageLoadResult,
+  StorageQuota,
+  CreateAdvancedNodeOptions,
+  AdvancedEffect 
+} from './types.js';
 
 // Messages sent FROM UI TO Plugin Thread
 
 /**
- * ❌❌❌ DEMO CODE - DELETE THIS INTERFACE WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 📚 REFERENCE CODE - Example implementation for learning purposes
  * 
- * 🚨 WARNING: This is SAMPLE MESSAGE TYPE for demonstration purposes only!
- * When you start building your actual plugin features, DELETE this interface entirely.
- * It will interfere with your real message handling and create confusion.
+ * This is a SAMPLE MESSAGE TYPE that demonstrates how to structure
+ * plugin messages with proper TypeScript typing. Use this as a reference
+ * when implementing your own plugin features.
  * 
- * ✅ TO DELETE: Remove this interface and its usage in UIMessage union type below
+ * 💡 TIP: Keep this as reference or replace with your actual message types
  */
 export interface CreateRectangleMessage {
   type: 'create-rectangle';
@@ -34,31 +42,71 @@ export interface ClosePluginMessage {
   type: 'close-plugin';
 }
 
+// ============================================================================
+// NEW MESSAGE TYPES (Figma API v1.110+)
+// ============================================================================
+
+export interface LoadPageMessage {
+  type: 'load-page';
+  pageId: string;
+  id: string; // For request correlation
+}
+
+export interface GetDocumentInfoMessage {
+  type: 'get-document-info';
+  id: string; // For request correlation
+}
+
+export interface CreateAdvancedNodeMessage {
+  type: 'create-advanced-node';
+  nodeType: 'TEXT_PATH' | 'TRANSFORM_GROUP' | 'RECTANGLE' | 'TEXT';
+  options: CreateAdvancedNodeOptions;
+  id: string; // For request correlation
+}
+
+export interface GetStorageQuotaMessage {
+  type: 'get-storage-quota';
+  id: string; // For request correlation
+}
+
+export interface LoadBrushesMessage {
+  type: 'load-brushes';
+  brushNames?: readonly string[];
+  id: string; // For request correlation
+}
+
 /**
- * ❌❌❌ DEMO CODE - DELETE THIS INTERFACE WHEN IMPLEMENTING REAL FEATURES ❌❌❌
+ * 📚 REFERENCE CODE - Example random shape generation
  * 
- * 🚨 WARNING: This is SAMPLE MESSAGE TYPE for demonstration purposes only!
- * When you start building your actual plugin features, DELETE this interface entirely.
- * It will interfere with your real message handling and create confusion.
+ * This demonstrates how to create messages for more complex operations
+ * that don't require parameters. Use as reference for implementing
+ * your own parameterless operations.
  * 
- * ✅ TO DELETE: Remove this interface and its usage in UIMessage union type below
+ * 💡 TIP: Keep this as reference or replace with your actual message types
  */
 export interface CreateRandomShapeMessage {
   type: 'create-random-shape';
 }
 
 /**
- * ❌ DEMO CODE WARNING: CreateRectangleMessage and CreateRandomShapeMessage are demo types
- * 🗑️ DELETE these demo message types when implementing your real features:
- * - CreateRectangleMessage
- * - CreateRandomShapeMessage
- * ✅ Keep GetSelectionMessage and ClosePluginMessage - these are useful utilities
+ * UI → Plugin Message Types
+ * 
+ * 📚 REFERENCE: CreateRectangleMessage and CreateRandomShapeMessage are example implementations
+ * 💡 TIP: Use these as reference when implementing your actual plugin features:
+ * - CreateRectangleMessage (parameterized operations)
+ * - CreateRandomShapeMessage (simple operations)
+ * ✅ UTILITY: GetSelectionMessage and ClosePluginMessage are generally useful
  */
 export type UIMessage =
-  | CreateRectangleMessage  // ❌ DELETE THIS DEMO TYPE
-  | CreateRandomShapeMessage  // ❌ DELETE THIS DEMO TYPE
-  | GetSelectionMessage     // ✅ Keep this utility
-  | ClosePluginMessage;     // ✅ Keep this utility
+  | CreateRectangleMessage     // 📚 Reference implementation
+  | CreateRandomShapeMessage   // 📚 Reference implementation  
+  | GetSelectionMessage        // ✅ Utility for selection management
+  | ClosePluginMessage         // ✅ Utility for plugin lifecycle
+  | LoadPageMessage            // ✅ Dynamic page loading (new)
+  | GetDocumentInfoMessage     // ✅ Document information (new)
+  | CreateAdvancedNodeMessage  // ✅ Advanced node creation (new)
+  | GetStorageQuotaMessage     // ✅ Storage management (new)
+  | LoadBrushesMessage;        // ✅ Brush loading (new)
 
 // Messages sent FROM Plugin TO UI Thread
 export interface NotificationMessage {
@@ -82,7 +130,53 @@ export interface OperationResultMessage {
   result: Result<unknown>;
 }
 
-export type PluginMessage = NotificationMessage | SelectionChangedMessage | OperationResultMessage;
+// ============================================================================
+// NEW PLUGIN → UI MESSAGES (Figma API v1.110+)
+// ============================================================================
+
+export interface PageLoadedMessage {
+  type: 'page-loaded';
+  result: PageLoadResult;
+}
+
+export interface DocumentInfoMessage {
+  type: 'document-info';
+  id: string; // Correlates with request
+  documentData: DocumentData;
+}
+
+export interface StorageQuotaMessage {
+  type: 'storage-quota';
+  id: string; // Correlates with request
+  quota: StorageQuota;
+}
+
+export interface BrushesLoadedMessage {
+  type: 'brushes-loaded';
+  id: string; // Correlates with request
+  success: boolean;
+  loadedBrushes?: readonly string[];
+  error?: string;
+}
+
+export interface AdvancedNodeCreatedMessage {
+  type: 'advanced-node-created';
+  id: string; // Correlates with request
+  nodeId: string;
+  nodeType: string;
+  success: boolean;
+  error?: string;
+}
+
+export type PluginMessage = 
+  | NotificationMessage 
+  | SelectionChangedMessage 
+  | OperationResultMessage
+  | PageLoadedMessage
+  | DocumentInfoMessage
+  | StorageQuotaMessage
+  | BrushesLoadedMessage
+  | AdvancedNodeCreatedMessage;
 
 // Legacy type for backwards compatibility
 export type UiMessage = UIMessage;

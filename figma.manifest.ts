@@ -19,6 +19,9 @@ export default {
   main: 'code.js',
   ui: 'index.html',
 
+  // Dynamic page loading - enables access to other pages without preloading
+  documentAccess: 'dynamic-page',
+
   // Plugin capabilities - uncomment and add as needed:
   capabilities: [
     // 'inspect',     // Read properties from selected objects
@@ -27,8 +30,8 @@ export default {
     // 'textreview'   // Text content review
   ],
 
-  // Enable experimental APIs (use with caution)
-  enableProposedApi: false,
+  // Enable experimental/proposed APIs (Version 1, Update 110+ features)
+  enableProposedApi: true, // Required for latest node types and effects
 
   // Supported Figma editor types
   editorType: ['figma', 'figjam'],
@@ -42,29 +45,41 @@ export default {
 } satisfies PluginManifest;
 
 // Official Figma Plugin Manifest Type Definition
-// Only includes properties officially supported by Figma
+// Updated for Figma Plugin API Version 1, Update 110+ (2026)
 interface PluginManifest {
   name: string;
   id: string;
   api: string;
   main: string;
   ui?: string;
+  
+  // Document access control for dynamic page loading
+  documentAccess?: 'dynamic-page';
+  
   capabilities?: string[];
   enableProposedApi?: boolean;
   editorType?: Array<'figma' | 'figjam'>;
+  
+  // Network access configuration
   networkAccess?: {
     allowedDomains: string[];
   };
+  
+  // Plugin parameters for relaunch and menu commands
   parameters?: Array<{
     name: string;
     key: string;
     description?: string;
   }>;
+  
+  // Plugin menu items
   menu?: Array<{
     name: string;
     command: string;
     parameters?: Record<string, string>;
   }>;
+  
+  // Relaunch button configuration
   relaunchButtons?: Array<{
     command: string;
     name: string;
