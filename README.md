@@ -152,6 +152,11 @@ We've created comprehensive guides for developing Figma plugins with AI tools li
 - **[📋 Step-by-Step Development](./docs/ai-guides/step-by-step-development.md)** - Complete workflow
 - **[🐛 Debugging Guide](./docs/ai-guides/debugging-guide.md)** - When things go wrong
 
+**New AI Collaboration Guides:**
+- **[🤖 LLM Behavior Guidelines](./docs/ai-guides/llm-behavior-guidelines.md)** - How AI should help beginners
+- **[🤝 AI Collaboration Best Practices](./docs/ai-guides/ai-collaboration-best-practices.md)** - Maximize AI effectiveness
+- **[📈 Learning Progression Guide](./docs/ai-guides/learning-progression-guide.md)** - Structured skill development
+
 These guides include specific AI prompts, exact error solutions, and step-by-step instructions designed for beginners who want to build professional Figma plugins using AI assistance.
 
 ## 🎯 Demo Features

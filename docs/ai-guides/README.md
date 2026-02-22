@@ -43,6 +43,27 @@ These guides help you collaborate effectively with AI assistants like Claude, Ch
 - AI prompts for getting help with specific errors
 - Advanced debugging techniques for complex issues
 
+### 6. [LLM Behavior Guidelines](./llm-behavior-guidelines.md) - New!
+**Perfect for: AI assistants working with coding beginners**
+- How AI should behave when helping beginners
+- Code generation patterns and safety rules
+- Educational approach and progressive complexity
+- Response structure guidelines and quality standards
+
+### 7. [AI Collaboration Best Practices](./ai-collaboration-best-practices.md) - New!
+**Perfect for: Maximizing AI collaboration effectiveness**
+- The CLEAR prompting framework for better AI interactions
+- Prompt templates for common development scenarios
+- Iterative development patterns and communication strategies
+- How to build productive AI partnerships
+
+### 8. [Learning Progression Guide](./learning-progression-guide.md) - New!
+**Perfect for: Understanding the learning journey**
+- Clear skill development stages from beginner to advanced
+- Appropriate challenges for each learning stage  
+- How AI should adapt guidance as developers progress
+- Assessment questions and skill building exercises
+
 ## 🚀 Quick Start
 
 If you're completely new to Figma plugin development:
