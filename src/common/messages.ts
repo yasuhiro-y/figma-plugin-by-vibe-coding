@@ -5,25 +5,25 @@
  * All communication between threads must go through postMessage and be type-safe.
  */
 
-import type { 
-  Result, 
-  PageData, 
-  DocumentData, 
-  PageLoadResult,
-  StorageQuota,
+import type {
+  AdvancedEffect,
   CreateAdvancedNodeOptions,
-  AdvancedEffect 
+  DocumentData,
+  PageData,
+  PageLoadResult,
+  Result,
+  StorageQuota,
 } from './types.js';
 
 // Messages sent FROM UI TO Plugin Thread
 
 /**
  * 📚 REFERENCE CODE - Example implementation for learning purposes
- * 
+ *
  * This is a SAMPLE MESSAGE TYPE that demonstrates how to structure
  * plugin messages with proper TypeScript typing. Use this as a reference
  * when implementing your own plugin features.
- * 
+ *
  * 💡 TIP: Keep this as reference or replace with your actual message types
  */
 export interface CreateRectangleMessage {
@@ -77,11 +77,11 @@ export interface LoadBrushesMessage {
 
 /**
  * 📚 REFERENCE CODE - Example random shape generation
- * 
+ *
  * This demonstrates how to create messages for more complex operations
  * that don't require parameters. Use as reference for implementing
  * your own parameterless operations.
- * 
+ *
  * 💡 TIP: Keep this as reference or replace with your actual message types
  */
 export interface CreateRandomShapeMessage {
@@ -90,7 +90,7 @@ export interface CreateRandomShapeMessage {
 
 /**
  * UI → Plugin Message Types
- * 
+ *
  * 📚 REFERENCE: CreateRectangleMessage and CreateRandomShapeMessage are example implementations
  * 💡 TIP: Use these as reference when implementing your actual plugin features:
  * - CreateRectangleMessage (parameterized operations)
@@ -98,15 +98,15 @@ export interface CreateRandomShapeMessage {
  * ✅ UTILITY: GetSelectionMessage and ClosePluginMessage are generally useful
  */
 export type UIMessage =
-  | CreateRectangleMessage     // 📚 Reference implementation
-  | CreateRandomShapeMessage   // 📚 Reference implementation  
-  | GetSelectionMessage        // ✅ Utility for selection management
-  | ClosePluginMessage         // ✅ Utility for plugin lifecycle
-  | LoadPageMessage            // ✅ Dynamic page loading (new)
-  | GetDocumentInfoMessage     // ✅ Document information (new)
-  | CreateAdvancedNodeMessage  // ✅ Advanced node creation (new)
-  | GetStorageQuotaMessage     // ✅ Storage management (new)
-  | LoadBrushesMessage;        // ✅ Brush loading (new)
+  | CreateRectangleMessage // 📚 Reference implementation
+  | CreateRandomShapeMessage // 📚 Reference implementation
+  | GetSelectionMessage // ✅ Utility for selection management
+  | ClosePluginMessage // ✅ Utility for plugin lifecycle
+  | LoadPageMessage // ✅ Dynamic page loading (new)
+  | GetDocumentInfoMessage // ✅ Document information (new)
+  | CreateAdvancedNodeMessage // ✅ Advanced node creation (new)
+  | GetStorageQuotaMessage // ✅ Storage management (new)
+  | LoadBrushesMessage; // ✅ Brush loading (new)
 
 // Messages sent FROM Plugin TO UI Thread
 export interface NotificationMessage {
@@ -168,9 +168,9 @@ export interface AdvancedNodeCreatedMessage {
   error?: string;
 }
 
-export type PluginMessage = 
-  | NotificationMessage 
-  | SelectionChangedMessage 
+export type PluginMessage =
+  | NotificationMessage
+  | SelectionChangedMessage
   | OperationResultMessage
   | PageLoadedMessage
   | DocumentInfoMessage

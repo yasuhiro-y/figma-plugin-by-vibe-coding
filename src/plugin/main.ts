@@ -17,25 +17,25 @@
 
 import { UI_DIMENSIONS } from '../common/constants.js';
 import type {
+  CreateAdvancedNodeMessage,
   CreateRandomShapeMessage,
   CreateRectangleMessage,
-  LoadPageMessage,
   GetDocumentInfoMessage,
-  CreateAdvancedNodeMessage,
   GetStorageQuotaMessage,
   LoadBrushesMessage,
+  LoadPageMessage,
   PluginMessage,
   UIMessage,
 } from '../common/messages.js';
-import type { 
-  CreateNodeOptions, 
-  RGB, 
-  Result, 
-  PageData,
+import type {
+  CreateAdvancedNodeOptions,
+  CreateNodeOptions,
   DocumentData,
+  PageData,
   PageLoadResult,
+  RGB,
+  Result,
   StorageQuota,
-  CreateAdvancedNodeOptions
 } from '../common/types.js';
 
 // ============================================================================
@@ -200,11 +200,11 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
 
 /**
  * 📚 REFERENCE CODE - Example rectangle creation implementation
- * 
+ *
  * This demonstrates how to handle parameterized node creation with proper
- * error handling and type safety. Use as reference when implementing your 
+ * error handling and type safety. Use as reference when implementing your
  * own node creation features.
- * 
+ *
  * 💡 TIP: Keep as reference or replace with your actual implementation
  */
 async function handleCreateRectangle(msg: CreateRectangleMessage): Promise<Result<string>> {
@@ -232,11 +232,11 @@ async function handleCreateRectangle(msg: CreateRectangleMessage): Promise<Resul
 
 /**
  * 📚 REFERENCE CODE - Example random shape generation
- * 
+ *
  * This demonstrates how to create complex shapes with randomization,
  * showing advanced Figma API usage patterns and node manipulation.
  * Use as reference for implementing generative features.
- * 
+ *
  * 💡 TIP: Keep as reference or replace with your actual implementation
  */
 async function handleCreateRandomShape(
@@ -255,10 +255,10 @@ async function handleCreateRandomShape(
 
 /**
  * 📚 REFERENCE CODE - Basic node creation with options
- * 
+ *
  * This shows the fundamental pattern for creating and configuring Figma nodes
  * with proper error handling, positioning, and viewport management.
- * 
+ *
  * 💡 TIP: Use this pattern as foundation for your node creation logic
  */
 function createRectangleNode(options: CreateNodeOptions): string {
@@ -321,11 +321,11 @@ function createRectangleNode(options: CreateNodeOptions): string {
 
 /**
  * 📚 REFERENCE CODE - Advanced shape generation with randomization
- * 
+ *
  * This demonstrates creating different node types (rectangle, ellipse, polygon)
  * with random properties and comprehensive configuration. Shows advanced
  * Figma API usage patterns.
- * 
+ *
  * 💡 TIP: Use this as reference for procedural generation features
  */
 function createRandomShapeNode(): {
@@ -453,38 +453,38 @@ function getSelectionData(): Result<Array<{ id: string; name: string; type: stri
  */
 async function handleLoadPage(msg: LoadPageMessage): Promise<PageLoadResult> {
   const startTime = Date.now();
-  
+
   try {
     // Find the page to load
-    const targetPage = figma.root.children.find(page => page.id === msg.pageId);
-    
+    const targetPage = figma.root.children.find((page) => page.id === msg.pageId);
+
     if (!targetPage || targetPage.type !== 'PAGE') {
       return {
         pageId: msg.pageId,
         success: false,
-        error: `Page with ID ${msg.pageId} not found`
+        error: `Page with ID ${msg.pageId} not found`,
       };
     }
 
     // Load the page data (call loadAsync on the page node)
     await (targetPage as PageNode).loadAsync();
-    
+
     const loadTime = Date.now() - startTime;
     const nodeCount = targetPage.children.length;
-    
+
     figma.notify(`Loaded page "${targetPage.name}" (${nodeCount} objects, ${loadTime}ms)`);
-    
+
     return {
       pageId: msg.pageId,
       success: true,
       loadTime,
-      nodeCount
+      nodeCount,
     };
   } catch (error) {
     return {
       pageId: msg.pageId,
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to load page'
+      error: error instanceof Error ? error.message : 'Failed to load page',
     };
   }
 }
@@ -493,19 +493,19 @@ async function handleLoadPage(msg: LoadPageMessage): Promise<PageLoadResult> {
  * Get document information with all pages
  */
 function getDocumentInfo(): DocumentData {
-  const pages: PageData[] = figma.root.children.map(page => ({
+  const pages: PageData[] = figma.root.children.map((page) => ({
     id: page.id,
     name: page.name,
     type: 'PAGE' as const,
     nodeCount: page.children.length,
-    isLoaded: page === figma.currentPage // Only current page is guaranteed loaded
+    isLoaded: page === figma.currentPage, // Only current page is guaranteed loaded
   }));
 
   return {
     id: figma.root.id,
     name: figma.root.name,
     currentPageId: figma.currentPage.id,
-    pages
+    pages,
   };
 }
 
@@ -513,21 +513,23 @@ function getDocumentInfo(): DocumentData {
  * Handle advanced node creation with new API features
  */
 async function handleCreateAdvancedNode(
-  msg: CreateAdvancedNodeMessage
+  msg: CreateAdvancedNodeMessage,
 ): Promise<Result<{ nodeId: string; nodeType: string }>> {
   try {
     let node: SceneNode;
-    
+
     switch (msg.nodeType) {
       case 'TEXT_PATH': {
         // Create text on path - requires a VectorNode as base
         // figma.createTextPath(node: VectorNode, startSegment: number, startPosition: number)
         const vector = figma.createVector();
         // Create a simple circular path
-        vector.vectorPaths = [{
-          windingRule: 'NONZERO',
-          data: 'M 0 100 C 0 44.77 44.77 0 100 0 C 155.23 0 200 44.77 200 100 C 200 155.23 155.23 200 100 200 C 44.77 200 0 155.23 0 100 Z'
-        }];
+        vector.vectorPaths = [
+          {
+            windingRule: 'NONZERO',
+            data: 'M 0 100 C 0 44.77 44.77 0 100 0 C 155.23 0 200 44.77 200 100 C 200 155.23 155.23 200 100 200 C 44.77 200 0 155.23 0 100 Z',
+          },
+        ];
         figma.currentPage.appendChild(vector);
 
         await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
@@ -554,81 +556,79 @@ async function handleCreateAdvancedNode(
           offset: 120,
           axis: 'HORIZONTAL',
         };
-        figma.transformGroup(
-          [rect],
-          figma.currentPage,
-          figma.currentPage.children.length - 1,
-          [modifier],
-        );
+        figma.transformGroup([rect], figma.currentPage, figma.currentPage.children.length - 1, [
+          modifier,
+        ]);
 
         node = rect;
         break;
       }
-      
+
       case 'RECTANGLE': {
         const rect = figma.createRectangle();
         rect.resize(msg.options.width || 100, msg.options.height || 100);
-        
+
         // Apply advanced effects if provided
         if (msg.options.effects) {
           // Note: Some effects may require enableProposedApi: true
-          console.log('Advanced effects would be applied here');
+          // Advanced effects would be applied here
         }
-        
+
         node = rect;
         break;
       }
-      
+
       case 'TEXT': {
         const textNode = figma.createText();
-        
+
         // Load default font first
         await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
         textNode.characters = 'Sample Text';
-        textNode.fontSize = (msg.options as CreateAdvancedNodeOptions & { fontSize?: number }).fontSize || 16;
-        
+        textNode.fontSize =
+          (msg.options as CreateAdvancedNodeOptions & { fontSize?: number }).fontSize || 16;
+
         node = textNode;
         break;
       }
-      
+
       default:
         throw new Error(`Unsupported node type: ${msg.nodeType}`);
     }
-    
+
     // Apply common properties
     if (msg.options.x !== undefined && msg.options.y !== undefined) {
       node.x = msg.options.x;
       node.y = msg.options.y;
     } else {
       // Position in viewport center
-      positionNodeInViewport(node, { 
-        width: node.width || 100, 
-        height: node.height || 100 
+      positionNodeInViewport(node, {
+        width: node.width || 100,
+        height: node.height || 100,
       });
     }
-    
+
     if (msg.options.name) {
       node.name = msg.options.name;
     }
-    
+
     // Add to current page
     figma.currentPage.appendChild(node);
-    
+
     // Select and focus
     figma.currentPage.selection = [node];
     figma.viewport.scrollAndZoomIntoView([node]);
-    
+
     return {
       success: true,
       data: {
         nodeId: node.id,
-        nodeType: msg.nodeType
-      }
+        nodeType: msg.nodeType,
+      },
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error : new Error('Failed to create advanced node')
+      error: error instanceof Error ? error : new Error('Failed to create advanced node'),
     };
   }
 }
@@ -641,34 +641,34 @@ async function getStorageQuota(): Promise<StorageQuota> {
     // Get current usage - this is an approximation since Figma doesn't provide direct API
     const keys = await figma.clientStorage.keysAsync();
     let totalUsed = 0;
-    
+
     for (const key of keys) {
       try {
         const value = await figma.clientStorage.getAsync(key);
         if (value) {
           totalUsed += new Blob([value]).size;
         }
-      } catch (error) {
+      } catch (_error) {
         console.warn(`Failed to measure size for key: ${key}`);
       }
     }
-    
+
     const limit = 5 * 1024 * 1024; // 5MB
     const entryLimit = 100 * 1024; // 100KB per entry
-    
+
     return {
       used: totalUsed,
       available: limit - totalUsed,
       limit,
-      entryLimit
+      entryLimit,
     };
-  } catch (error) {
+  } catch (_error) {
     // Fallback values if quota check fails
     return {
       used: 0,
       available: 5 * 1024 * 1024,
       limit: 5 * 1024 * 1024,
-      entryLimit: 100 * 1024
+      entryLimit: 100 * 1024,
     };
   }
 }
@@ -676,21 +676,21 @@ async function getStorageQuota(): Promise<StorageQuota> {
 /**
  * Handle brush loading (new in v1.110+)
  */
-async function handleLoadBrushes(
-  msg: LoadBrushesMessage
-): Promise<Result<string[]>> {
+async function handleLoadBrushes(msg: LoadBrushesMessage): Promise<Result<string[]>> {
   try {
     // Load brushes by type - loadBrushesAsync requires a brush type argument
-    const brushType = (msg.brushNames?.[0] === 'SCATTER' ? 'SCATTER' : 'STRETCH') as 'STRETCH' | 'SCATTER';
+    const brushType = (msg.brushNames?.[0] === 'SCATTER' ? 'SCATTER' : 'STRETCH') as
+      | 'STRETCH'
+      | 'SCATTER';
     await figma.loadBrushesAsync(brushType);
     return {
       success: true,
-      data: [brushType]
+      data: [brushType],
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error : new Error('Failed to load brushes')
+      error: error instanceof Error ? error : new Error('Failed to load brushes'),
     };
   }
 }

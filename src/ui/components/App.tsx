@@ -1,24 +1,24 @@
 /**
  * ❌❌❌ DEMO UI - REPLACE THIS ENTIRE LAYOUT WITH YOUR OPTIMAL DESIGN ❌❌❌
- * 
+ *
  * 🚨 WARNING: This layout is designed for "Random Shape Generator" demo only!
  * 🚨 DO NOT copy this layout for your actual plugin - it won't be optimal!
- * 
+ *
  * ✅ INSTEAD: Design fresh UI from scratch using shadcn/ui components
  * ✅ OPTIMIZE: Create layout specifically for YOUR plugin's workflow
  * ✅ ANALYZE: What does your user need? List view? Form? Dashboard? Tool panel?
- * 
+ *
  * This demo shows:
  * - Clean shadcn/ui-only approach (✅ Keep this principle)
  * - Figma native notifications (✅ Keep this pattern)
  * - Simple demo functionality (❌ Replace with your features)
  * - Browser → Figma → shadcn/ui priority (✅ Keep this pattern)
- * 
+ *
  * 🗑️ DELETE: header design, card layout, button arrangement, spacing patterns
  * 🎨 CREATE: Fresh design optimized for your specific plugin functionality
  */
 
-import React from 'react';
+import type React from 'react';
 import { useFigmaPlugin, useRandomShapeGenerator } from '../hooks';
 
 import { Button } from './ui/button';
@@ -52,11 +52,15 @@ export function App(): React.JSX.Element {
         <div className="space-y-6">
           {/* ❌ DEMO CARD - Replace entire structure with layout optimal for YOUR features */}
           <Card>
-            <CardHeader className="text-center"> {/* ❌ DEMO: Centered header - maybe you need left-aligned? No header? Multiple sections? */}
+            <CardHeader className="text-center">
+              {' '}
+              {/* ❌ DEMO: Centered header - maybe you need left-aligned? No header? Multiple sections? */}
               {/* ❌❌❌ UPDATE THIS TITLE WHEN YOUR PLUGIN IDEA IS FINALIZED ❌❌❌ */}
-              <CardTitle className="text-xl">🎲 Random Shape Generator</CardTitle> {/* ✅ Replace with your actual plugin name */}
+              <CardTitle className="text-xl">🎲 Random Shape Generator</CardTitle>{' '}
+              {/* ✅ Replace with your actual plugin name */}
               <CardDescription>
-                Click the button to create random shapes with random colors and sizes! {/* ❌ Update with your plugin description */}
+                Click the button to create random shapes with random colors and sizes!{' '}
+                {/* ❌ Update with your plugin description */}
               </CardDescription>
             </CardHeader>
             {/* ❌ DEMO CONTENT AREA - Design content structure for YOUR specific features */}

@@ -140,12 +140,12 @@ export interface TransformGroupNodeData extends BaseNodeData {
   readonly transform?: readonly number[][]; // 3x3 transformation matrix
 }
 
-export type NodeData = 
-  | BaseNodeData 
-  | TextNodeData 
-  | RectangleNodeData 
-  | GroupNodeData 
-  | TextPathNodeData 
+export type NodeData =
+  | BaseNodeData
+  | TextNodeData
+  | RectangleNodeData
+  | GroupNodeData
+  | TextPathNodeData
   | TransformGroupNodeData;
 
 // ============================================================================
