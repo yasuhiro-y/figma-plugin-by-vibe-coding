@@ -1,5 +1,7 @@
 # Performance Optimization & Memory Management
 
+> **Note**: For specific Figma API method signatures, see plugin-api.d.ts.
+
 ## CRITICAL: Infinite Loop Prevention
 
 **FATAL RISK**: Infinite loops in plugins can freeze Figma entirely, requiring force quit.

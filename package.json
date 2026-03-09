@@ -49,6 +49,9 @@
     "*.schema.json"
   ],
   "scripts": {
+    "postinstall": "tsx scripts/ensure-latest-typings.ts",
+    "predev": "tsx scripts/ensure-latest-typings.ts",
+    "prebuild": "tsx scripts/ensure-latest-typings.ts",
     "dev": "pnpm run build:manifest && concurrently \"pnpm run dev:plugin\" \"pnpm run dev:ui\"",
     "dev:plugin": "vite build --watch --config vite.config.plugin.ts",
     "dev:ui": "vite build --watch --config vite.config.ui.ts",
@@ -77,11 +80,11 @@
     "check-all": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
     "auto-lint": "tsx scripts/auto-lint.ts",
     "prepare-publish": "tsx scripts/generate-publish-assets.ts",
-"release": "echo 'This is a boilerplate template. Please use create-figma-plugin-by-vibe-coding to generate new projects.'"
+    "release": "echo 'This is a boilerplate template. Please use create-figma-plugin-by-vibe-coding to generate new projects.'"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@figma/plugin-typings": "^1.101.0",
+    "@figma/plugin-typings": "^1.123.0",
     "@types/node": "^22.18.5",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
@@ -96,7 +99,7 @@
     "rimraf": "^6.0.1",
     "rulesync": "^1.2.3",
     "tailwind-merge": "^2.5.5",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^3.4.19",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",

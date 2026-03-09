@@ -117,15 +117,26 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
 
       case 'create-advanced-node': {
         const result = await handleCreateAdvancedNode(msg);
-        const response: PluginMessage = {
-          type: 'advanced-node-created',
-          id: msg.id,
-          nodeId: result.success ? result.data.nodeId : '',
-          nodeType: msg.nodeType,
-          success: result.success,
-          error: result.success ? undefined : result.error.message,
-        };
-        figma.ui.postMessage(response);
+        if (result.success) {
+          const response: PluginMessage = {
+            type: 'advanced-node-created',
+            id: msg.id,
+            nodeId: result.data.nodeId,
+            nodeType: msg.nodeType,
+            success: true,
+          };
+          figma.ui.postMessage(response);
+        } else {
+          const response: PluginMessage = {
+            type: 'advanced-node-created',
+            id: msg.id,
+            nodeId: '',
+            nodeType: msg.nodeType,
+            success: false,
+            error: result.error.message,
+          };
+          figma.ui.postMessage(response);
+        }
         break;
       }
 
@@ -142,14 +153,23 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
 
       case 'load-brushes': {
         const result = await handleLoadBrushes(msg);
-        const response: PluginMessage = {
-          type: 'brushes-loaded',
-          id: msg.id,
-          success: result.success,
-          loadedBrushes: result.success ? result.data : undefined,
-          error: result.success ? undefined : result.error.message,
-        };
-        figma.ui.postMessage(response);
+        if (result.success) {
+          const response: PluginMessage = {
+            type: 'brushes-loaded',
+            id: msg.id,
+            success: true,
+            loadedBrushes: result.data,
+          };
+          figma.ui.postMessage(response);
+        } else {
+          const response: PluginMessage = {
+            type: 'brushes-loaded',
+            id: msg.id,
+            success: false,
+            error: result.error.message,
+          };
+          figma.ui.postMessage(response);
+        }
         break;
       }
 
@@ -446,8 +466,8 @@ async function handleLoadPage(msg: LoadPageMessage): Promise<PageLoadResult> {
       };
     }
 
-    // Load the page (this is now async with dynamic loading)
-    await figma.loadPageAsync(targetPage as PageNode);
+    // Load the page data (call loadAsync on the page node)
+    await (targetPage as PageNode).loadAsync();
     
     const loadTime = Date.now() - startTime;
     const nodeCount = targetPage.children.length;
@@ -500,26 +520,48 @@ async function handleCreateAdvancedNode(
     
     switch (msg.nodeType) {
       case 'TEXT_PATH': {
-        // Create text on path (new in v1.110+)
-        const textPath = figma.createTextPath();
+        // Create text on path - requires a VectorNode as base
+        // figma.createTextPath(node: VectorNode, startSegment: number, startPosition: number)
+        const vector = figma.createVector();
+        // Create a simple circular path
+        vector.vectorPaths = [{
+          windingRule: 'NONZERO',
+          data: 'M 0 100 C 0 44.77 44.77 0 100 0 C 155.23 0 200 44.77 200 100 C 200 155.23 155.23 200 100 200 C 44.77 200 0 155.23 0 100 Z'
+        }];
+        figma.currentPage.appendChild(vector);
+
+        await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+        const textPath = figma.createTextPath(vector, 0, 0);
         textPath.characters = 'Text on Path';
-        
-        // Set path data if provided
-        if (msg.options.strokeData) {
-          // Configure path settings - this would require specific path data
-          console.log('Text path creation with custom path data');
-        }
-        
+
         node = textPath;
         break;
       }
-      
+
       case 'TRANSFORM_GROUP': {
-        // Create transform group (new in v1.110+)  
-        const transformGroup = figma.createTransformGroup();
-        transformGroup.name = msg.options.name || 'Transform Group';
-        
-        node = transformGroup;
+        // Transform group requires existing nodes and TransformModifier[]
+        // figma.transformGroup(nodes, parent, index, modifiers)
+        const rect = figma.createRectangle();
+        rect.resize(100, 100);
+        rect.name = msg.options.name || 'Transform Group Item';
+        figma.currentPage.appendChild(rect);
+
+        const modifier: LinearRepeatModifier = {
+          type: 'REPEAT',
+          repeatType: 'LINEAR',
+          count: 3,
+          unitType: 'PIXELS',
+          offset: 120,
+          axis: 'HORIZONTAL',
+        };
+        figma.transformGroup(
+          [rect],
+          figma.currentPage,
+          figma.currentPage.children.length - 1,
+          [modifier],
+        );
+
+        node = rect;
         break;
       }
       
@@ -543,7 +585,7 @@ async function handleCreateAdvancedNode(
         // Load default font first
         await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
         textNode.characters = 'Sample Text';
-        textNode.fontSize = msg.options.fontSize || 16;
+        textNode.fontSize = (msg.options as CreateAdvancedNodeOptions & { fontSize?: number }).fontSize || 16;
         
         node = textNode;
         break;
@@ -638,21 +680,13 @@ async function handleLoadBrushes(
   msg: LoadBrushesMessage
 ): Promise<Result<string[]>> {
   try {
-    // Load all brushes or specific ones
-    if (msg.brushNames && msg.brushNames.length > 0) {
-      await figma.loadBrushesAsync(msg.brushNames as string[]);
-      return {
-        success: true,
-        data: [...msg.brushNames]
-      };
-    } else {
-      // Load all available brushes
-      await figma.loadBrushesAsync();
-      return {
-        success: true,
-        data: ['default', 'textured', 'marker'] // Example brush names
-      };
-    }
+    // Load brushes by type - loadBrushesAsync requires a brush type argument
+    const brushType = (msg.brushNames?.[0] === 'SCATTER' ? 'SCATTER' : 'STRETCH') as 'STRETCH' | 'SCATTER';
+    await figma.loadBrushesAsync(brushType);
+    return {
+      success: true,
+      data: [brushType]
+    };
   } catch (error) {
     return {
       success: false,

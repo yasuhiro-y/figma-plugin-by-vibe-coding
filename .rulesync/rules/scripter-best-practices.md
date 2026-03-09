@@ -10,45 +10,8 @@ globs: ["src/plugin/**/*", "src/common/**/*"]
 ## Error Handling and User Feedback
 
 ### User-Friendly Notifications
-```typescript
-// ✅ EXCELLENT - Rich notification patterns
-function showNotification(message: string, options?: NotificationOptions): void {
-  figma.notify(message, {
-    timeout: 4000,
-    ...options
-  });
-}
 
-// ✅ Success notifications
-function showSuccess(message: string): void {
-  figma.notify(`✅ ${message}`, { 
-    timeout: 3000
-  });
-}
-
-// ✅ Error notifications with helpful context
-function showError(error: string, context?: string): void {
-  const message = context ? `${context}: ${error}` : error;
-  figma.notify(`❌ ${message}`, { 
-    error: true, 
-    timeout: 6000,
-    button: {
-      text: 'Help',
-      action: () => {
-        console.log('Error details:', { error, context });
-        figma.notify('Check the console for detailed error information');
-      }
-    }
-  });
-}
-
-// ✅ Warning notifications
-function showWarning(message: string): void {
-  figma.notify(`⚠️ ${message}`, { 
-    timeout: 4000 
-  });
-}
-```
+Use figma.notify() for user feedback. See plugin-api.d.ts for notification options.
 
 ### Console-Based Debugging
 ```typescript
@@ -92,55 +55,7 @@ async function processNode(node: SceneNode): Promise<void> {
 
 ## Font Handling Excellence
 
-### Comprehensive Font Management
-```typescript
-// ✅ EXCELLENT - Robust font handling system
-interface FontLoadResult {
-  success: boolean;
-  fontName: FontName;
-  error?: string;
-}
-
-async function loadFontSafely(fontName: FontName): Promise<FontLoadResult> {
-  try {
-    await figma.loadFontAsync(fontName);
-    return { success: true, fontName };
-  } catch (error) {
-    const errorMessage = `Failed to load font: ${fontName.family}-${fontName.style}`;
-    console.error(errorMessage, error);
-    return { 
-      success: false, 
-      fontName, 
-      error: errorMessage 
-    };
-  }
-}
-
-// ✅ Text operations with proper font handling
-async function updateTextNode(node: TextNode, newText: string): Promise<void> {
-  if (node.type !== 'TEXT') {
-    showError('Invalid node type for text operation');
-    return;
-  }
-
-  const fontName = node.fontName as FontName;
-  const fontResult = await loadFontSafely(fontName);
-  
-  if (!fontResult.success) {
-    showError(`Cannot update text: ${fontResult.error}`);
-    showWarning('Consider using a system font like Inter-Regular');
-    return;
-  }
-
-  try {
-    node.characters = newText;
-    showSuccess(`Updated text: "${newText.substring(0, 30)}..."`);
-  } catch (error) {
-    showError('Failed to update text content', `Check node permissions`);
-    console.error('Text update error:', error);
-  }
-}
-```
+Font loading is critical. Always load fonts before text operations. See node-manipulation.md for patterns and plugin-api.d.ts for methods.
 
 ## Batch Processing Excellence
 

@@ -17,11 +17,10 @@ function processNode(node: SceneNode): NodeData {
 }
 
 // ✅ REQUIRED - Async functions with Promise types
-async function createRectangle(width: number, height: number): Promise<string> {
-  const rect = figma.createRectangle();
-  rect.resize(width, height);
-  figma.currentPage.appendChild(rect);
-  return rect.id;
+async function fetchAndTransform(input: string, options: TransformOptions): Promise<Result<OutputData>> {
+  const parsed = InputSchema.parse(input);
+  const transformed = applyTransform(parsed, options);
+  return { success: true, data: transformed };
 }
 
 // ❌ FORBIDDEN - Implicit types
@@ -322,6 +321,8 @@ export type FigmaColor = typeof FIGMA_COLORS[keyof typeof FIGMA_COLORS];
 ## Advanced TypeScript Patterns for Figma Plugins
 
 ### Figma-Specific Type Patterns
+
+> **Note**: Refer to plugin-api.d.ts for available node types and mixins.
 
 ```typescript
 // ✅ FIGMA API TYPE GUARDS - Essential for safe node operations

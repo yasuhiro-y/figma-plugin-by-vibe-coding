@@ -14,7 +14,7 @@ globs: ["**/*"]
 - **shadcn/ui**: Complete component system with Tailwind CSS
 - **Vite**: Dual-process build configuration (plugin + UI)
 - **Zod**: Runtime schema validation for message contracts
-- **Figma Plugin Typings**: Full API type coverage
+- **Figma Plugin Typings**: Always kept at latest version (auto-enforced). See plugin-api.d.ts for complete API reference.
 
 ## Dual-Process Architecture (CRITICAL)
 
@@ -68,4 +68,4 @@ import { Card, CardContent } from '@/components/ui/card';
 2. **shadcn/ui Exclusive**: No custom CSS - use component library only
 3. **Error Boundaries**: Handle all failures with Result pattern
 4. **Message Contracts**: Type-safe communication via `src/common/messages.ts`
-5. **Font Loading**: Always use `figma.loadFontAsync()` before text operations
+5. **Font Loading**: Always load fonts before text operations (see plugin-api.d.ts for methods)

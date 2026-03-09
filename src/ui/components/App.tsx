@@ -24,7 +24,7 @@ import { useFigmaPlugin, useRandomShapeGenerator } from '../hooks';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
-export function App(): JSX.Element {
+export function App(): React.JSX.Element {
   const { closePlugin, isConnected } = useFigmaPlugin();
   const { createdCount, createRandomShape } = useRandomShapeGenerator();
 

@@ -6,53 +6,7 @@
 
 **CRITICAL**: Plugin data keys must use unique namespaces to avoid conflicts with other plugins.
 
-```typescript
-// ❌ DANGEROUS - Generic keys cause conflicts
-node.setPluginData('settings', data);          // Conflicts with other plugins!
-node.setPluginData('config', data);           // Too generic!
-node.setSharedPluginData('team', 'data', data); // Namespace collision!
-
-// ✅ SAFE - Use reverse domain notation
-const PLUGIN_NAMESPACE = 'com.company.plugin-name';
-const PLUGIN_PREFIX = 'myCompany.myPlugin';
-
-class SafeDataStorage {
-  // Private data with unique keys
-  static setPluginData(node: SceneNode, key: string, data: any): void {
-    const safeKey = `${PLUGIN_PREFIX}.${key}`;
-    node.setPluginData(safeKey, JSON.stringify(data));
-  }
-  
-  static getPluginData<T>(node: SceneNode, key: string, defaultValue: T): T {
-    const safeKey = `${PLUGIN_PREFIX}.${key}`;
-    const stored = node.getPluginData(safeKey);
-    return stored ? JSON.parse(stored) : defaultValue;
-  }
-  
-  // Shared data with proper namespace
-  static setSharedData(node: SceneNode, key: string, data: any): void {
-    node.setSharedPluginData(PLUGIN_NAMESPACE, key, JSON.stringify(data));
-  }
-  
-  static getSharedData<T>(node: SceneNode, key: string, defaultValue: T): T {
-    const stored = node.getSharedPluginData(PLUGIN_NAMESPACE, key);
-    return stored ? JSON.parse(stored) : defaultValue;
-  }
-  
-  // Clean up old data (migration helper)
-  static migrateFromGenericKeys(node: SceneNode, oldKeys: string[]): void {
-    oldKeys.forEach(oldKey => {
-      const oldData = node.getPluginData(oldKey);
-      if (oldData) {
-        // Migrate to new namespaced key
-        this.setPluginData(node, oldKey, JSON.parse(oldData));
-        // Remove old key
-        node.setPluginData(oldKey, '');
-      }
-    });
-  }
-}
-```
+Use namespaced keys with setPluginData/setSharedPluginData. See plugin-api.d.ts for storage API methods.
 
 ### Inter-Plugin Communication
 

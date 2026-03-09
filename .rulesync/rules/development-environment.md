@@ -141,6 +141,8 @@ ls -la dist/  # code.js should be < 1MB ideally
 
 ### Type Definition Management
 
+The @figma/plugin-typings package is auto-updated to latest version via postinstall script.
+
 ```json
 // tsconfig.plugin.json - Plugin thread types
 {
